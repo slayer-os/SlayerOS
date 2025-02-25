@@ -1,6 +1,4 @@
-### **`README.md` for SlayerOS**  
 
-```md
 # SlayerOS  
 
 SlayerOS is a lightweight, fast, and sleek operating system designed for **bare-metal x86_64 processors**. It features a **RAM-based execution model**, a **basic shell**, and a **simple filesystem** for file storage.  
