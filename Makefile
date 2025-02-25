@@ -15,10 +15,14 @@ OBJ_DIR := build/obj
 LIBC_SRC := src/libc
 LIBC_BIN := $(OBJ_DIR)/libc.o
 
+DRIVER_SRC := src/drivers
+DRIVER_BIN := $(OBJ_DIR)/drivers.o
+
 ISO_FILE := build/slayer_$(VERSION).iso
 ISO_DIR := build/iso
 
 include misc/make/base.mk
+override CFLAGS += -DSLAY_VERSION=\"$(VERSION)\"
 
 KERN_SOURCES := $(shell find $(KERNEL_SRC) -name '*.c' -or -name '*.s')
 KERN_OBJECTS := $(patsubst $(KERNEL_SRC)/%.c, $(OBJ_DIR)/%.o, $(patsubst $(KERNEL_SRC)/%.s, $(OBJ_DIR)/%.o, $(KERN_SOURCES)))
@@ -26,20 +30,36 @@ KERN_OBJECTS := $(patsubst $(KERNEL_SRC)/%.c, $(OBJ_DIR)/%.o, $(patsubst $(KERNE
 LIBC_SOURCES := $(shell find $(LIBC_SRC) -name '*.c' -or -name '*.s')
 LIBC_OBJECTS := $(patsubst $(LIBC_SRC)/%.c, $(OBJ_DIR)/%.o, $(patsubst $(LIBC_SRC)/%.s, $(OBJ_DIR)/%.o, $(LIBC_SOURCES)))
 
-override CFLAGS += -DSLAY_VERSION=\"$(VERSION)\"
+DRIVER_SOURCES := $(shell find $(DRIVER_SRC) -name '*.c' -or -name '*.s')
+DRIVER_OBJECTS := $(patsubst $(DRIVER_SRC)/%.c, $(OBJ_DIR)/%.o, $(patsubst $(DRIVER_SRC)/%.s, $(OBJ_DIR)/%.o, $(DRIVER_SOURCES)))
+
 
 all: $(ISO_FILE)
 
 # LIBC
 
 $(LIBC_BIN): $(LIBC_OBJECTS)
-	$(LD) -r $(LIBC_+LDFLAGS) -o $(LIBC_BIN) $(LIBC_OBJECTS)
+	$(LD) -r $(LIBC_LDFLAGS) -o $(LIBC_BIN) $(LIBC_OBJECTS)
 
 $(OBJ_DIR)/%.o: $(LIBC_SRC)/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(OBJ_DIR)/%.o: $(LIBC_SRC)/%.s
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+# Drivers
+
+$(DRIVER_BIN): $(DRIVER_OBJECTS)
+	$(LD) -r $(LIBC_LDFLAGS) -o $(DRIVER_BIN) $(DRIVER_OBJECTS)
+
+$(OBJ_DIR)/%.o: $(DRIVER_SRC)/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(DRIVER_SRC)/%.s
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -53,8 +73,8 @@ $(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.s
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL_BIN): $(LIBC_BIN) $(KERN_OBJECTS)
-	$(LD) $(KERN_LDFLAGS) -o $(KERNEL_BIN) $(KERN_OBJECTS) $(LIBC_BIN)
+$(KERNEL_BIN): $(LIBC_BIN) $(DRIVER_BIN) $(KERN_OBJECTS)
+	$(LD) $(KERN_LDFLAGS) -o $(KERNEL_BIN) $(KERN_OBJECTS) $(LIBC_BIN) $(DRIVER_BIN)
 
 
 # Limine

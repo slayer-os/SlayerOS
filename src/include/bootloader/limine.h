@@ -11,6 +11,7 @@ typedef struct bootloader_ctx {
   u64 hhdm_addr;
   void *kern_address_virt;
   void *kern_address_phys;
+  struct limine_framebuffer_response *fb_info;
 } bootloader_ctx_t;
 
 void bootloader_gather();

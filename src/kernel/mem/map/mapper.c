@@ -73,10 +73,25 @@ void map_bootloader_memory() {
   }
 }
 
+void map_framebuffer_memory() {
+  for (u8 i=0; i<boot_ctx.memmap_entries_count; i++) {
+    struct limine_memmap_entry *entry = boot_ctx.memmap_entries[i];
+    if (entry->type == LIMINE_MEMMAP_FRAMEBUFFER) {
+      u64 vaddr = (u64)PHYS2VIRT(entry->base);
+      u64 paddr = entry->base;
+      u64 pages = entry->length / FRAME_SIZE;
+      for (u64 page = 0; page < pages; page++) {
+        map_page((void*)(paddr + (page * FRAME_SIZE)), (void*)(vaddr + (page * FRAME_SIZE)), PAGE_PRESENT | PAGE_WRITE | PAGE_USER);
+      }
+    }
+  }
+}
+
 
 
 void full_memory_map() {
   map_bootloader_memory();
+  map_framebuffer_memory();
   map_found_memory();
   map_hhdm_memory();
   map_kernel_code();

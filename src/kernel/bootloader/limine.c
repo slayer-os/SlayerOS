@@ -24,6 +24,10 @@ struct limine_kernel_address_request limine_kernaddr = {
     .id = LIMINE_KERNEL_ADDRESS_REQUEST,
 };
 
+struct limine_framebuffer_request limine_fb = {
+    .id = LIMINE_FRAMEBUFFER_REQUEST,
+};
+
 void sort_memmap() {
   // run bubble sort to reverse sort the memory map by usable memory size
   for (uint64_t i = 0; i < boot_ctx.memmap_entries_count; i++) {
@@ -46,5 +50,6 @@ void bootloader_gather() {
   boot_ctx.hhdm_addr = limine_hhdm.response->offset;
   boot_ctx.kern_address_virt = (void*)limine_kernaddr.response->virtual_base;
   boot_ctx.kern_address_phys = (void*)limine_kernaddr.response->physical_base;
+  boot_ctx.fb_info = limine_fb.response;
   sort_memmap();
 }
