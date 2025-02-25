@@ -4,22 +4,32 @@
 void vsprintf(char *buffer, const char *format, va_list args) {
     size_t b_pos=0;
     size_t f_pos=0;
+    bool ext_prefix = false;
+    bool quad = false;
     while (format[f_pos]) {
         if (format[f_pos] == '%') {
             f_pos++;
-            if (format[f_pos] == 'd') {
-                int i = va_arg(args, int);
+            if (format[f_pos] == '#') { ext_prefix = true; f_pos++; }
+            if (format[f_pos] == 'l') { quad = true; f_pos++; }
+            if (format[f_pos] == '%') {
+                buffer[b_pos] = '%';
+            }
+            else if (format[f_pos] == 'd') {
+                s64 i = 0;
+                if (quad) { i = va_arg(args, s64); }
+                else { i = va_arg(args, int); }
                 char str[32];
                 itoa(i, str, 10);
                 memcpy(buffer+b_pos, str, strlen(str));
                 b_pos += strlen(str)-1;
             }
             else if (format[f_pos] == 'x') {
-                int i = va_arg(args, int);
+                s64 i = 0;
+                if (quad) { i = va_arg(args, s64); }
+                else { i = va_arg(args, int); }
                 char str[32];
-                str[0] = '0';
-                str[1] = 'x';
-                itoa_hex(i, str+2);
+                if (ext_prefix) { str[0] = '0'; str[1]='x'; }
+                itoa_hex(i, str + (ext_prefix ? 2 : 0));
                 memcpy(buffer+b_pos, str, strlen(str));
                 b_pos += strlen(str)-1;
             }
@@ -38,6 +48,7 @@ void vsprintf(char *buffer, const char *format, va_list args) {
                 b_pos += strlen(s)-1;
             }
             else if (format[f_pos] == 'a') {
+                // for dates and times which need to be exactly 2 digits
                 char str[32];
                 u8 off = 0;
                 int i = va_arg(args, int);

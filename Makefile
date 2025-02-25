@@ -82,6 +82,8 @@ $(ISO_FILE): $(LIMINE_BIN) $(KERNEL_BIN)
 run: $(ISO_FILE)
 	qemu-system-x86_64 $(QEMU_ARGS) -cdrom $<
 
+runint: $(ISO_FILE)
+	qemu-system-x86_64 $(QEMU_ARGS) -cdrom $< -d int
 
 # Misc
 

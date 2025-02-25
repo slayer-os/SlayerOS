@@ -12,7 +12,8 @@ override CFLAGS := -Wall \
 	-mno-mmx \
 	-mno-sse \
 	-mno-sse2 \
-	-mno-red-zone
+	-mno-red-zone \
+	-O3
 
 override LIBC_LDFLAGS := -nostdlib -shared -z max-page-size=0x1000
 override KERN_LDFLAGS += -m elf_x86_64 \
