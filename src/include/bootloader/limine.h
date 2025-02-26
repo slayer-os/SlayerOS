@@ -12,6 +12,11 @@ typedef struct bootloader_ctx {
   void *kern_address_virt;
   void *kern_address_phys;
   struct limine_framebuffer_response *fb_info;
+  struct limine_file *kernel_file;
+  /*
+   * LMFAO, self-aware kernel
+   * this is meta-introspecting stuff
+  */
 } bootloader_ctx_t;
 
 void bootloader_gather();

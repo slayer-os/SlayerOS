@@ -2,6 +2,6 @@
 #define LIBC_MATH_H
 #include <libc/types.h>
 
-u64 abs(u64 val);
+s64 abs(s64 val);
 
 #endif

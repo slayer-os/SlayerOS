@@ -38,10 +38,8 @@ heap_page_t *create_heap_page(size_t size) {
   return page;
 }
 
-const size_t OPT_SIZE_TRESHOLD = 0x40; // Actual free size required to fragment segment
 void *alloc_segment(heap_page_t *page, heap_segment_t *segment, size_t size) {
-  if (segment->size > size + sizeof(heap_segment_t)
-      && segment->size - size - sizeof(heap_segment_t) > OPT_SIZE_TRESHOLD) {
+  if (segment->size > size + sizeof(heap_segment_t)) {
 
     heap_segment_t *fragment = segment->addr + size;
     fragment->addr = (void*)fragment + sizeof(heap_segment_t);

@@ -1,5 +1,8 @@
 
-override CFLAGS := -Wall \
+# -g is essential as the kernel tries to print a stack trace on panic
+# and it needs debug info to lookup the function source file and line number
+override CFLAGS := -g \
+	-Wall \
 	-Wextra \
 	-std=gnu11 \
 	-ffreestanding \

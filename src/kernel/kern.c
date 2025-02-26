@@ -10,6 +10,7 @@
 #include <mem/heap.h>
 
 #include <libc/assert.h>
+#include <libc/elf.h>
 
 #include <drivers/fb_gfx.h>
 
@@ -17,19 +18,21 @@ void _kernel_pre_setup() {
   serial_init();
   bootloader_gather();
   init_frame_alloc();
-  init_paging(); log_success("Paging initialized");
+  init_paging(); log_success("Memory mapped"); log_success("Paging initialized");
 }
 
 void _kernel_start() {
   _kernel_pre_setup();
   log_print("\n      ------------------- \n\n");
   log_success("Booted from %s %s", boot_ctx.name, boot_ctx.version);
-  log_success("Running Slayer %s", SLAY_VERSION);
+  log_success("Running Slayer %s  [ %s ]", SLAY_VERSION, boot_ctx.kernel_file->path);
 
   init_fb_gfx();
   gfx_fill(0x1f1f1f);
   log_debug("Screen width: %d, height: %d", gfx_screen_width(), gfx_screen_height());
   log_debug("Heap allocated at %p", kmalloc(0x100));
+  struct elf_desc desc;
+  elf_parse(&desc, boot_ctx.kernel_file->address, boot_ctx.kernel_file->size);
 }
 
 void _start(void) {
