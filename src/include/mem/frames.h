@@ -9,6 +9,7 @@
 
 void *allocate_frame();
 void free_frame(void *frame);
+void *allocate_frames(size_t count);
 
 void init_frame_alloc();
 

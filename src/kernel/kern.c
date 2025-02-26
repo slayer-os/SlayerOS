@@ -7,6 +7,7 @@
 
 #include <mem/frames.h>
 #include <mem/paging.h>
+#include <mem/heap.h>
 
 #include <libc/assert.h>
 
@@ -19,8 +20,6 @@ void _kernel_pre_setup() {
   init_paging(); log_success("Paging initialized");
 }
 
-#define NOT_ZERO 0
-
 void _kernel_start() {
   _kernel_pre_setup();
   log_print("\n      ------------------- \n\n");
@@ -28,11 +27,9 @@ void _kernel_start() {
   log_success("Running Slayer %s", SLAY_VERSION);
 
   init_fb_gfx();
-  gfx_fill(0x2f4f4f);
-  u32 width = gfx_screen_width();
-  u32 height = gfx_screen_height();
-  log_debug("Screen width: %d, height: %d", width, height);
-  gfx_fill_rect((width/2)-50, (height/2)-50, 100, 100, 0xa9a9a9);
+  gfx_fill(0x1f1f1f);
+  log_debug("Screen width: %d, height: %d", gfx_screen_width(), gfx_screen_height());
+  log_debug("Heap allocated at %p", kmalloc(0x100));
 }
 
 void _start(void) {

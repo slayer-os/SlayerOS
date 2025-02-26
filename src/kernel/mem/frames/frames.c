@@ -21,6 +21,34 @@ void *allocate_frame() {
   return frame;
 }
 
+
+void *allocate_frames(size_t count) {
+  // find adjacent free frames
+  u32 start_frame = latest_frame;
+  u32 frame_count = 0;
+  for (u32 i =start_frame; i < available_frames; i++) {
+    if (frames[i] == 1) {
+      start_frame = i;
+      frame_count = 1;
+    } else {
+      frame_count++;
+    }
+    if (frame_count == count) {
+      break;
+    }
+  }
+  if (frame_count < count) {
+    return NULL;
+  }
+  for (u32 i = start_frame; i < start_frame + count; i++) {
+    frames[i] = 1;
+  }
+  latest_frame++; // at least one frame is allocated, preventing the next allocation from starting at the same frame
+  void *frame = base_addr + start_frame * FRAME_SIZE;
+  memset(frame, 0, count * FRAME_SIZE);
+  return frame;
+}
+
 void free_frame(void *frame) {
   u32 frame_num = (u32)((u64)frame - (u64)base_addr) / FRAME_SIZE;
   frames[frame_num] = 0;
