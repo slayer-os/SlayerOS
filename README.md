@@ -4,7 +4,7 @@
 SlayerOS is a lightweight, fast, and sleek operating system designed for **bare-metal x86_64 processors**.
 
 ## **Features**  
-✅ **Boots if you ask nicely**  
+✅ **It might boot if you ask NICELY**  
 
 ---
 
@@ -43,7 +43,7 @@ make run
 ---
 
 ## **License**  
-SlayerOS is an experimental project so far <3
+SlayerOS is an experimental project and is licensed under the GPL 3.0 (GNU Public License 3.0) with love <3
 ```
 
 
