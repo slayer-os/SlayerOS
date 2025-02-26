@@ -33,6 +33,8 @@ void _kernel_start() {
   log_debug("Heap allocated at %p", kmalloc(0x100));
   struct elf_desc desc;
   elf_parse(&desc, boot_ctx.kernel_file->address, boot_ctx.kernel_file->size);
+  
+  draw_ascii_logo(344, 212, 1, 0xFFFFFF);
 }
 
 void _start(void) {

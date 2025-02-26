@@ -1,6 +1,7 @@
 #include <libc/elf.h>
 #include <libc/assert.h>
 #include <libc/string.h>
+#include <libc/dwarf.h>
 
 #include <dbg/log.h>
 

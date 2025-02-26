@@ -12,4 +12,6 @@ void gfx_fill(u32 color);
 u32 gfx_screen_width();
 u32 gfx_screen_height();
 
+void draw_ascii_logo(u32 x, u32 y, u32 scale, u32 color);
+
 #endif
