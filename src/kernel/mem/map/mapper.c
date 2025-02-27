@@ -60,7 +60,7 @@ void map_hhdm_memory() {
 }
 
 void map_bootloader_memory() {
-  for (u8 i=0; i<boot_ctx.memmap_entries_count; i++) {
+  for (u64 i=0; i<boot_ctx.memmap_entries_count; i++) {
     struct limine_memmap_entry *entry = boot_ctx.memmap_entries[i];
     if (entry->type == LIMINE_MEMMAP_BOOTLOADER_RECLAIMABLE) {
       u64 vaddr = (u64)PHYS2VIRT(entry->base);
@@ -74,7 +74,7 @@ void map_bootloader_memory() {
 }
 
 void map_framebuffer_memory() {
-  for (u8 i=0; i<boot_ctx.memmap_entries_count; i++) {
+  for (u64 i=0; i<boot_ctx.memmap_entries_count; i++) {
     struct limine_memmap_entry *entry = boot_ctx.memmap_entries[i];
     if (entry->type == LIMINE_MEMMAP_FRAMEBUFFER) {
       u64 vaddr = (u64)PHYS2VIRT(entry->base);
