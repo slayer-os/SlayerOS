@@ -1,7 +1,8 @@
 
 # -g is essential as the kernel tries to print a stack trace on panic
 # and it needs debug info to lookup the function source file and line number
-override CFLAGS := -g \
+
+override CFLAGS := -g -fno-inline-small-functions \
 	-Wall \
 	-Wextra \
 	-std=gnu11 \

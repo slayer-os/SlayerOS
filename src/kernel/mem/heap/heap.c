@@ -25,7 +25,7 @@ heap_page_t *create_heap_page(size_t size) {
     alloc_size = FRAME_SIZE;
   }
   else {
-    alloc_size = sizeof(heap_page_t) + sizeof(heap_segment_t) + size, FRAME_SIZE;
+    alloc_size = sizeof(heap_page_t) + sizeof(heap_segment_t) + size;
     num_pages = ROUND_UP(alloc_size, FRAME_SIZE);
   }
 

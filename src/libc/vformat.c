@@ -44,6 +44,12 @@ void vsprintf(char *buffer, const char *format, va_list args) {
             }
             else if (format[f_pos] == 's') {
                 char *s = va_arg(args, char *);
+                if (!s) {
+                    s = "(null)";
+                }
+                else if (s[0] == 0) {
+                    s = "(empty)";
+                }
                 memcpy(buffer+b_pos, s, strlen(s));
                 b_pos += strlen(s)-1;
             }
@@ -71,4 +77,11 @@ void vsprintf(char *buffer, const char *format, va_list args) {
         f_pos++;
     }
     buffer[b_pos] = 0;
+}
+
+void sprintf(char *buffer, const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    vsprintf(buffer, format, args);
+    va_end(args);
 }

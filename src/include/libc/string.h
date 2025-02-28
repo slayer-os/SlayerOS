@@ -12,6 +12,7 @@ char* itoa_hex(u64 value, char *str);
 u64 atoi(const char *ptr);
 void strcat(char *dest, const char *src);
 void vsprintf(char *buffer, const char *format, va_list args);
+void sprintf(char *buffer, const char *format, ...);
 u16 strcmp(const char *str1, const char *str2);
 bit memcmp(const void *ptr1, const void *ptr2, u32 n);
 char *strtok(const char *str, const char *delim);

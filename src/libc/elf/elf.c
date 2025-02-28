@@ -5,33 +5,6 @@
 
 #include <dbg/log.h>
 
-void elf_symbol_dump(struct elf_desc *desc) {
-  for (u32 i=0;i<(desc->sects.symtab->sh_size / desc->sects.symtab->sh_entsize);i++) {
-    struct elf_sym *sym = &desc->symtab[i];
-    if (sym->st_name == 0) {
-      continue;
-    }
-    const char *name = desc->strtab + sym->st_name;
-    if (sym->st_info == 0x0) {
-      continue;
-    }
-    switch (ELF64_ST_BIND(sym->st_info)) {
-      case STB_LOCAL:
-        log_debug("Local symbol: %s", name);
-        break;
-      case STB_GLOBAL:
-        log_debug("Global symbol: %s", name);
-        break;
-      case STB_WEAK:
-        log_debug("Weak symbol: %s", name);
-        break;
-      default:
-        log_debug("Unknown symbol: %s", name);
-        break;
-    }
-  }
-}
-
 
 void elf_parse(struct elf_desc *desc, void *data, size_t size) {
   assert(size >= sizeof(struct elf_header), "Invalid ELF file");

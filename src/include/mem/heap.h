@@ -4,6 +4,7 @@
 #include <mem/frames.h>
 #include <mem/paging.h>
 
+
 typedef struct heap_segment {
   void *addr;
   size_t size;
@@ -21,5 +22,6 @@ typedef struct heap_page {
 void *kmalloc(size_t size);
 bool kfree(void *addr);
 //void *krealloc(void *addr, size_t size);
+
 
 #endif

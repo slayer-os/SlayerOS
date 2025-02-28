@@ -119,6 +119,16 @@ enum elf_shtype {
   STB_HIPROC = 15
 };
 
+enum elf_symtype {
+  STT_NOTYPE = 0,
+  STT_OBJECT = 1,
+  STT_FUNC = 2,
+  STT_SECTION = 3,
+  STT_FILE = 4,
+  STT_LOPROC = 13,
+  STT_HIPROC = 15
+};
+
 enum elf_shflags {
   SHF_WRITE = 0x1,
   SHF_ALLOC = 0x2,
@@ -161,6 +171,7 @@ struct elf_desc {
 };
 
 #define ELF64_ST_BIND(i) ((i) >> 4)
+#define ELF64_ST_TYPE(i) ((i) & 0xf)
 
 void elf_parse(struct elf_desc *desc, void *data, size_t size);
 
