@@ -1,0 +1,6 @@
+[submodule "libc"]
+    path = libc
+    url = git@github.com:slayer-os/libc.git
+[submodule "drivers"]
+    path = drivers
+    url = git@github.com:slayer-os/drivers.git

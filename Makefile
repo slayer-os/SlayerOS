@@ -5,18 +5,18 @@ LIMINE_BIN := $(LIMINE_DIR)/limine
 LIMINE_CFG := misc/boot/limine.conf
 
 
-INCLUDES := -I$(LIMINE_DIR) -Isrc/include
+LIBC_DIR := libc
+DRIVERS_DIR := drivers
+
+INCLUDES := -I$(LIMINE_DIR) -I$(LIBC_DIR)/src/include -I$(DRIVERS_DIR)/src/include -Isrc/include
 KERNEL_SRC := src/kernel
 LINKER_SCRIPT = misc/linkage.ld
 KERNEL_BIN := build/kernel.bin
 
 OBJ_DIR := build/obj
 
-LIBC_SRC := src/libc
-LIBC_BIN := $(OBJ_DIR)/libc.o
-
-DRIVER_SRC := src/drivers
-DRIVER_BIN := $(OBJ_DIR)/drivers.o
+LIBC_LIB := $(LIBC_DIR)/build/libc.a
+DRIVERS_LIB := $(DRIVERS_DIR)/build/drivers.a
 
 ISO_FILE := build/slayer_$(VERSION).iso
 ISO_DIR := build/iso
@@ -27,41 +27,19 @@ override CFLAGS += -DSLAY_VERSION=\"$(VERSION)\"
 KERN_SOURCES := $(shell find $(KERNEL_SRC) -name '*.c' -or -name '*.s')
 KERN_OBJECTS := $(patsubst $(KERNEL_SRC)/%.c, $(OBJ_DIR)/%.o, $(patsubst $(KERNEL_SRC)/%.s, $(OBJ_DIR)/%.o, $(KERN_SOURCES)))
 
-LIBC_SOURCES := $(shell find $(LIBC_SRC) -name '*.c' -or -name '*.s')
-LIBC_OBJECTS := $(patsubst $(LIBC_SRC)/%.c, $(OBJ_DIR)/%.o, $(patsubst $(LIBC_SRC)/%.s, $(OBJ_DIR)/%.o, $(LIBC_SOURCES)))
-
-DRIVER_SOURCES := $(shell find $(DRIVER_SRC) -name '*.c' -or -name '*.s')
-DRIVER_OBJECTS := $(patsubst $(DRIVER_SRC)/%.c, $(OBJ_DIR)/%.o, $(patsubst $(DRIVER_SRC)/%.s, $(OBJ_DIR)/%.o, $(DRIVER_SOURCES)))
 
 
 all: $(ISO_FILE)
 
 # LIBC
 
-$(LIBC_BIN): $(LIBC_OBJECTS)
-	$(LD) -r $(LIBC_LDFLAGS) -o $(LIBC_BIN) $(LIBC_OBJECTS)
-
-$(OBJ_DIR)/%.o: $(LIBC_SRC)/%.c
-	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(OBJ_DIR)/%.o: $(LIBC_SRC)/%.s
-	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c $< -o $@
-
+$(LIBC_LIB):
+	$(MAKE) -C $(LIBC_DIR)
 
 # Drivers
 
-$(DRIVER_BIN): $(DRIVER_OBJECTS)
-	$(LD) -r $(LIBC_LDFLAGS) -o $(DRIVER_BIN) $(DRIVER_OBJECTS)
-
-$(OBJ_DIR)/%.o: $(DRIVER_SRC)/%.c
-	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(OBJ_DIR)/%.o: $(DRIVER_SRC)/%.s
-	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c $< -o $@
+$(DRIVERS_LIB):
+	$(MAKE) -C $(DRIVERS_DIR)
 
 # Kernel
 
@@ -73,8 +51,8 @@ $(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.s
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL_BIN): $(LIBC_BIN) $(DRIVER_BIN) $(KERN_OBJECTS)
-	$(LD) $(KERN_LDFLAGS) -o $(KERNEL_BIN) $(KERN_OBJECTS) $(LIBC_BIN) $(DRIVER_BIN)
+$(KERNEL_BIN): $(LIBC_LIB) $(DRIVERS_LIB) $(KERN_OBJECTS)
+	$(LD) $(KERN_LDFLAGS) -o $(KERNEL_BIN) $(KERN_OBJECTS) $(DRIVERS_LIB) $(LIBC_LIB) 
 
 
 # Limine

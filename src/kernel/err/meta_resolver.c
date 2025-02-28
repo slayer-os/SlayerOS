@@ -46,6 +46,6 @@ char *resolve_address(u64 address) {
     entry = entry->next;
   }
   char *name = kmalloc(strlen(nearest->name) + 16);
-  sprintf(name, "%s+%p", nearest->name, address - nearest->address);
+  sprintf(name, "%s+%p", nearest->name, (void*)(address - nearest->address));
   return name;
 }
