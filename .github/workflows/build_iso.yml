@@ -62,3 +62,4 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.PUBLISHER_APP_SECRET }}
+
