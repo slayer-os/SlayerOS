@@ -60,3 +60,5 @@ jobs:
           files: ${{ env.iso_file }}
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISHER_APP_SECRET }}
