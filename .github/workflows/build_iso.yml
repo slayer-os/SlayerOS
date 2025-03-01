@@ -54,9 +54,9 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.sha }}
-          name: Slayer OS - ${{ github.sha }}
-          body: "This is an automated release for commit ${{ github.sha }}."
+          tag_name: v${{ env.short_sha }}
+          name: Slayer OS - ${{ env.short_sha }}
+          body: "This is an automated release for commit ${{ env.short_sha }}."
           files: ${{ env.iso_file }}
           draft: false
           prerelease: false
