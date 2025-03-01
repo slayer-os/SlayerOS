@@ -26,31 +26,35 @@ override CFLAGS += -DSLAY_VERSION=\"$(VERSION)\"
 KERN_SOURCES := $(shell find $(KERNEL_SRC) -name '*.c' -or -name '*.s')
 KERN_OBJECTS := $(patsubst $(KERNEL_SRC)/%.c, $(OBJ_DIR)/%.o, $(patsubst $(KERNEL_SRC)/%.s, $(OBJ_DIR)/%.o, $(KERN_SOURCES)))
 
+LIMINE_MAKEFILE := $(LIMINE_DIR)/Makefile
+LIBC_MAKEFILE := $(LIBC_DIR)/Makefile
+DRIVERS_MAKEFILE := $(DRIVERS_DIR)/Makefile
+
 
 all: $(ISO_FILE)
 
-$(LIMINE_DIR):
+$(LIMINE_MAKEFILE):
 	git submodule update --init --recursive
 
-$(LIBC_DIR):
+$(LIBC_MAKEFILE):
 	git submodule update --init --recursive
 
-$(DRIVERS_DIR):
+$(DRIVERS_MAKEFILE):
 	git submodule update --init --recursive
 
 # LIBC
 
-$(LIBC_LIB): $(LIBC_DIR)
+$(LIBC_LIB): $(LIBC_MAKEFILE)
 	$(MAKE) -C $(LIBC_DIR)
 
 # Drivers
 
-$(DRIVERS_LIB): $(DRIVERS_DIR)
+$(DRIVERS_LIB): $(DRIVERS_MAKEFILE)
 	$(MAKE) -C $(DRIVERS_DIR)
 
 # Limine
 
-$(LIMINE_BIN): $(LIMINE_DIR)
+$(LIMINE_BIN): $(LIMINE_MAKEFILE)
 	$(MAKE) -C $(LIMINE_DIR)
 
 # Kernel
