@@ -4,3 +4,7 @@
 [submodule "drivers"]
     path = drivers
     url = git@github.com:slayer-os/drivers.git
+[submodule "limine"]
+    path = limine
+    url = git@github.com:limine-bootloader/limine.git
+    branch = v9.x-binary

@@ -1,9 +1,8 @@
 VERSION := $(shell git rev-parse --short HEAD)
 
-LIMINE_DIR := misc/limine
+LIMINE_DIR := limine
 LIMINE_BIN := $(LIMINE_DIR)/limine
 LIMINE_CFG := misc/boot/limine.conf
-
 
 LIBC_DIR := libc
 DRIVERS_DIR := drivers
@@ -28,18 +27,31 @@ KERN_SOURCES := $(shell find $(KERNEL_SRC) -name '*.c' -or -name '*.s')
 KERN_OBJECTS := $(patsubst $(KERNEL_SRC)/%.c, $(OBJ_DIR)/%.o, $(patsubst $(KERNEL_SRC)/%.s, $(OBJ_DIR)/%.o, $(KERN_SOURCES)))
 
 
-
 all: $(ISO_FILE)
+
+$(LIMINE_DIR):
+	git submodule update --init --recursive
+
+$(LIBC_DIR):
+	git submodule update --init --recursive
+
+$(DRIVERS_DIR):
+	git submodule update --init --recursive
 
 # LIBC
 
-$(LIBC_LIB):
+$(LIBC_LIB): $(LIBC_DIR)
 	$(MAKE) -C $(LIBC_DIR)
 
 # Drivers
 
-$(DRIVERS_LIB):
+$(DRIVERS_LIB): $(DRIVERS_DIR)
 	$(MAKE) -C $(DRIVERS_DIR)
+
+# Limine
+
+$(LIMINE_BIN): $(LIMINE_DIR)
+	$(MAKE) -C $(LIMINE_DIR)
 
 # Kernel
 
@@ -54,11 +66,6 @@ $(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.s
 $(KERNEL_BIN): $(LIBC_LIB) $(DRIVERS_LIB) $(KERN_OBJECTS)
 	$(LD) $(KERN_LDFLAGS) -o $(KERNEL_BIN) $(KERN_OBJECTS) $(DRIVERS_LIB) $(LIBC_LIB) 
 
-
-# Limine
-
-$(LIMINE_BIN):
-	bash misc/scripts/limine_bootstrap.sh
 
 $(ISO_FILE): $(LIMINE_BIN) $(KERNEL_BIN)
 	mkdir -p $(ISO_DIR)/boot/limine
@@ -87,3 +94,7 @@ runint: $(ISO_FILE)
 
 clean:
 	rm -rf build
+	$(MAKE) -C $(LIBC_DIR) clean
+	$(MAKE) -C $(DRIVERS_DIR) clean
+
+.PHONY: all clean run runint
