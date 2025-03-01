@@ -7,7 +7,11 @@ LIMINE_CFG := misc/boot/limine.conf
 LIBC_DIR := libc
 DRIVERS_DIR := drivers
 
-INCLUDES := -I$(LIMINE_DIR) -I$(LIBC_DIR)/src/include -I$(DRIVERS_DIR)/src/include -Isrc/include
+INCLUDES := -I$(shell realpath $(LIMINE_DIR)) \
+						-I$(LIBC_DIR)/src/include \
+						-I$(DRIVERS_DIR)/src/include \
+						-Isrc/include
+
 KERNEL_SRC := src/kernel
 LINKER_SCRIPT = misc/linkage.ld
 KERNEL_BIN := build/kernel.bin
