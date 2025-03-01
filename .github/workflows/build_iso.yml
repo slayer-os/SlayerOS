@@ -1,0 +1,62 @@
+name: Build and Release ISO
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Kernel ISO
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xorriso gcc make
+
+      - name: Build Kernel ISO
+        run: make all
+
+      - name: Upload ISO Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: slayer-iso
+          path: build/slayer_*.iso
+
+  release:
+    name: Release ISO
+    runs-on: ubuntu-latest
+    needs: build
+    if: contains(github.event.head_commit.message, '[major]')
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download ISO Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: slayer-iso
+          path: build/
+
+      - name: Get ISO Filename
+        id: iso
+        run: echo "iso_file=$(ls build/slayer_*.iso)" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.sha }}
+          name: Slayer OS - ${{ github.sha }}
+          body: "This is an automated release for commit ${{ github.sha }}."
+          files: ${{ env.iso_file }}
+          draft: false
+          prerelease: false
