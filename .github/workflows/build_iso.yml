@@ -47,6 +47,10 @@ jobs:
           name: slayer-iso
           path: build/
 
+      - name: Get Short SHA
+        id: short_sha
+        run: echo "short_sha=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+
       - name: Get ISO Filename
         id: iso
         run: echo "iso_file=$(ls build/slayer_*.iso)" >> $GITHUB_ENV
