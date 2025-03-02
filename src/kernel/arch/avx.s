@@ -21,41 +21,25 @@ vec_y:
 
 .section .text
 
-.global __enable_avx
-__enable_avx:
-  # OSXSAVE => CPUID w EAX=1, check ECX bit 27.
-  mov eax, 1
+.global __enable_sse
+__enable_sse:
+  mov eax, 0x1
   cpuid
-  bt ecx, 27
-  jc osxsave_supported
-  # OSXSAVE not supported
-  xor al, al
+  test edx, 1<<25
+  jnz _sse_supported
+  
+  xor rax, rax
   jmp done
 
-osxsave_supported:
-  # Enable FPU/SSE:
+_sse_supported:
   mov rax, cr0
-  and rax, ~(1 << 2)
-  or  rax, (1 << 1)
+  and ax, 0xFFFB		# clear coprocessor emulation CR0.EM
+  or ax, 0x2			  # set coprocessor monitoring  CR0.MP
   mov cr0, rax
-
   mov rax, cr4
-  or  rax, (1 << 9)     # OSFXSR (bit 9)
-  or  rax, (1 << 10)    # OSXMMEXCPT (bit 10)
+  or ax, 3 << 9		  # set CR4.OSFXSR and CR4.OSXMMEXCPT at the same time
   mov cr4, rax
-
-  xor ecx, ecx
-  mov eax, 7            # Bits: bit0 (x87), bit1 (SSE), bit2 (AVX) => 0b111 = 7.
-  xor edx, edx
-  xsetbv
-
-testing_avx:
-  vzeroall
-  vmovups xmm0, XMMWORD PTR [rip+vec_x]
-  vinsertf128 ymm0, ymm0, xmm0, 0
-  vmovups ymm1, YMMWORD PTR [rip+vec_y]
-  vaddps ymm0, ymm0, ymm1
-  mov al, 1
+  ret
 
 done:
   ret

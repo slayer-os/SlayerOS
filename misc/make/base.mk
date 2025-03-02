@@ -15,6 +15,8 @@ override CFLAGS := -g -fno-inline-small-functions \
 	-mno-80387 \
 	-mno-mmx \
 	-mno-red-zone \
+	-mno-sse \
+	-mno-sse2 \
 	-O3
 
 override LIBC_LDFLAGS := -nostdlib -z max-page-size=0x1000
@@ -26,4 +28,9 @@ override KERN_LDFLAGS += -m elf_x86_64 \
 	-T $(LINKER_SCRIPT)
 
 
-QEMU_ARGS := -cpu qemu64,+avx,+ssse3,+sse4.1,+sse4.2 -smp 2 -serial stdio --no-reboot --no-shutdown -vga virtio -display sdl
+QEMU_ARGS := \
+						 -cpu qemu64,+ssse3,+sse4.1,+sse4.2,+x2apic -smp 2,maxcpus=8 \
+						 -serial stdio \
+						 --no-reboot \
+						 --no-shutdown \
+						 -vga virtio -display sdl

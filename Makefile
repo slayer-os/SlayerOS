@@ -99,6 +99,12 @@ run: $(ISO_FILE)
 runint: $(ISO_FILE)
 	qemu-system-x86_64 $(QEMU_ARGS) -cdrom $< -d int
 
+debug: $(ISO_FILE)
+	qemu-system-x86_64 $(QEMU_ARGS) -cdrom $< -s -S
+
+gdb:
+	sudo gdb -ex "target remote localhost:1234" -ex "symbol-file $(KERNEL_BIN)" -ex "b _start" -ex "c" -ex "layout src" -ex "layout split"
+
 # Misc
 
 clean:
