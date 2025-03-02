@@ -1,9 +1,11 @@
 [submodule "libc"]
     path = libc
     url = git@github.com:slayer-os/libc.git
+    branch = main
 [submodule "drivers"]
     path = drivers
     url = git@github.com:slayer-os/drivers.git
+    branch = main
 [submodule "limine"]
     path = limine
     url = git@github.com:limine-bootloader/limine.git
