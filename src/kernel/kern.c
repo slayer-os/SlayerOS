@@ -16,12 +16,15 @@
 
 #include <drivers/fb_gfx.h>
 
+extern bool __enable_avx();
 void _kernel_pre_setup() {
   serial_init();
   bootloader_gather();
   init_frame_alloc();
   init_paging(); log_success("Memory mapped"); log_success("Paging initialized");
-  init_symbol_table();
+  init_symbol_table(); log_success("Kernel symbols mapped");
+  if (__enable_avx()) log_success("AVX enabled");
+  else log_critical("Failed to enable AVX");
 }
 
 void _graphics_setup() {

@@ -14,8 +14,6 @@ override CFLAGS := -g -fno-inline-small-functions \
 	-march=x86-64 \
 	-mno-80387 \
 	-mno-mmx \
-	-mno-sse \
-	-mno-sse2 \
 	-mno-red-zone \
 	-O3
 
@@ -28,4 +26,4 @@ override KERN_LDFLAGS += -m elf_x86_64 \
 	-T $(LINKER_SCRIPT)
 
 
-QEMU_ARGS := -smp 2 -serial stdio --no-reboot --no-shutdown -vga virtio -display sdl
+QEMU_ARGS := -cpu qemu64,+avx,+ssse3,+sse4.1,+sse4.2 -smp 2 -serial stdio --no-reboot --no-shutdown -vga virtio -display sdl
