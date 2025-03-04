@@ -81,7 +81,7 @@ void log_debug(const char *format, ...) {
 }
 
 const char *ASSERT_MESSAGE = "Failed assertion \x1b[0m\x1b[41m%s\x1b[0m\n\t"
-                             "   [ \x1b[33m%s\x1b[0m ]  ->  \x1b[36;4m%s:%d\x1b[0m in \x1b[36;4m%s(...)";
+                             "   [ \x1b[33m%s\x1b[0m ]  ->  \x1b[36;4m%s:%d\x1b[0m in \x1b[36;4m%s";
 void __log_failed_assert(const char *assertion, const char *message, const char *file, u32 line, const char *function) {
   log_critical(ASSERT_MESSAGE, assertion, message, file, line, function);
 }

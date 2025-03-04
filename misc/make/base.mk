@@ -5,7 +5,7 @@
 override CFLAGS := -g -fno-inline-small-functions \
 	-Wall \
 	-Wextra \
-	-std=gnu11 \
+	-std=c++17 \
 	-ffreestanding \
 	-fno-stack-protector \
 	-fno-stack-check \
@@ -17,6 +17,8 @@ override CFLAGS := -g -fno-inline-small-functions \
 	-mno-red-zone \
 	-mno-sse \
 	-mno-sse2 \
+	-Wno-missing-field-initializers \
+	-Wno-pointer-arith \
 	-O3
 
 override LIBC_LDFLAGS := -nostdlib -z max-page-size=0x1000
@@ -27,10 +29,12 @@ override KERN_LDFLAGS += -m elf_x86_64 \
 	-z max-page-size=0x1000 \
 	-T $(LINKER_SCRIPT)
 
+QEMU_CPU_MODEL := host
+QEMU_CPUID :=\
+						+xsave,+ssse3,+sse4.1,+sse4.2,+x2apic,+avx,+avx2,enforce
 
 QEMU_ARGS := \
-						 -cpu qemu64,+ssse3,+sse4.1,+sse4.2,+x2apic -smp 2,maxcpus=8 \
-						 -serial stdio \
-						 --no-reboot \
-						 --no-shutdown \
-						 -vga virtio -display sdl
+						 --enable-kvm -cpu $(QEMU_CPU_MODEL),$(QEMU_CPUID) -smp 2,maxcpus=8 \
+						 --no-reboot
+
+QEMU_OPT := -serial stdio -vga virtio -display sdl --no-shutdown

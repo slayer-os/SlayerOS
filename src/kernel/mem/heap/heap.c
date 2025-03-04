@@ -1,7 +1,6 @@
 #include <mem/heap.h>
 
-heap_page_t *heap = NULL;
-heap_page_t *farthest_page = NULL;
+heap_page_t *heap = nullptr;
 
 void page_segments_init(heap_page_t *page) {
   heap_segment_t *segment = (heap_segment_t *)page->addr;
@@ -12,7 +11,7 @@ void page_segments_init(heap_page_t *page) {
   
   segment->size = page->free_size;
   segment->free = true;
-  segment->next = NULL;
+  segment->next = nullptr;
   
   page->first = segment;
 }
@@ -31,18 +30,19 @@ heap_page_t *create_heap_page(size_t size) {
 
   heap_page_t *page = (heap_page_t *)allocate_frames(num_pages);
   
-  page->addr = (void*)page + sizeof(heap_page_t);
+  
+  page->addr = (void*)((char*)page + sizeof(heap_page_t));
   page->free_size = alloc_size - sizeof(heap_page_t);
   page_segments_init(page);
-  page->next = NULL;
+  page->next = nullptr;
   return page;
 }
 
 void *alloc_segment(heap_page_t *page, heap_segment_t *segment, size_t size) {
   if (segment->size > size + sizeof(heap_segment_t)) {
 
-    heap_segment_t *fragment = segment->addr + size;
-    fragment->addr = (void*)fragment + sizeof(heap_segment_t);
+    heap_segment_t *fragment = (heap_segment_t*)((char*)segment->addr + size);
+    fragment->addr = (void*)((char*)fragment + sizeof(heap_segment_t));
     fragment->size = segment->size - size - sizeof(heap_segment_t);
     fragment->free = true;
     fragment->next = segment->next;
@@ -65,8 +65,8 @@ void try_segment_merge(heap_page_t *page, heap_segment_t *segment) {
 }
 
 void *kmalloc(size_t size) {
-  if (heap == NULL) farthest_page = heap = create_heap_page(size);
-  heap_page_t *page = farthest_page;
+  if (heap == nullptr) heap = create_heap_page(size);
+  heap_page_t *page = heap;
   while (page) {
     heap_segment_t *segment = page->first;
     while (segment) {
@@ -75,7 +75,7 @@ void *kmalloc(size_t size) {
       }
       segment = segment->next;
     }
-    if (page->next == NULL) break;
+    if (page->next == nullptr) break;
     else page = page->next;
   }
   page->next = create_heap_page(size);

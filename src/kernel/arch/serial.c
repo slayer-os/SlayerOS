@@ -27,11 +27,11 @@ void serial_init() {
    outb(COM1 + 4, 0x0F);
 }
 
-bit b_serial_active() {
+bool b_serial_active() {
     return inb(COM1 + 5) & 1;
 }
 
-bit b_transmit_empty() {
+bool b_transmit_empty() {
     return inb(COM1 + 5) & 0x20;
 }
 

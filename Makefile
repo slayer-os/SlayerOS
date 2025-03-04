@@ -66,11 +66,11 @@ $(LIMINE_BIN): $(LIMINE_MAKEFILE)
 
 $(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.s
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CXX) $(CFLAGS) -c $< -o $@
 
 $(KERNEL_BIN): $(LIBC_LIB) $(DRIVERS_LIB) $(KERN_OBJECTS)
 	$(LD) $(KERN_LDFLAGS) -o $(KERNEL_BIN) $(KERN_OBJECTS) $(DRIVERS_LIB) $(LIBC_LIB) 
@@ -94,16 +94,19 @@ $(ISO_FILE): $(LIMINE_BIN) $(KERNEL_BIN)
 # Testing
 
 run: $(ISO_FILE)
-	qemu-system-x86_64 $(QEMU_ARGS) -cdrom $<
+	qemu-system-x86_64 $(QEMU_ARGS) $(QEMU_OPT) -cdrom $<
 
 runint: $(ISO_FILE)
-	qemu-system-x86_64 $(QEMU_ARGS) -cdrom $< -d int
+	qemu-system-x86_64 $(QEMU_ARGS) $(QEMU_OPT) -cdrom $< -d int
 
 debug: $(ISO_FILE)
-	qemu-system-x86_64 $(QEMU_ARGS) -cdrom $< -s -S
+	qemu-system-x86_64 $(QEMU_ARGS) $(QEMU_OPT) -cdrom $< -s -S
 
 gdb:
-	sudo gdb -ex "target remote localhost:1234" -ex "symbol-file $(KERNEL_BIN)" -ex "b _start" -ex "c" -ex "layout src" -ex "layout split"
+	sudo gdb -ex "target remote localhost:1234" -ex "symbol-file $(KERNEL_BIN)" -ex "hbreak _start" -ex "c" -ex "layout src" -ex "layout split"
+
+remote:
+	qemu-system-x86_64 $(QEMU_ARGS) -display none -cdrom $(ISO_FILE) -serial stdio -monitor telnet:0.0.0.0:4444,server,wait
 
 # Misc
 
@@ -112,4 +115,4 @@ clean:
 	$(MAKE) -C $(LIBC_DIR) clean
 	$(MAKE) -C $(DRIVERS_DIR) clean
 
-.PHONY: all clean run runint
+.PHONY: all clean run runint $(LIBC_LIB) $(DRIVERS_LIB)

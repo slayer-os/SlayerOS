@@ -34,29 +34,29 @@ void map_page(void *physptr, void *virtptr, u64 flags) {
   u16 pml3_index = (virt >> 30) & 0x1ff;
   u16 pml2_index = (virt >> 21) & 0x1ff;
   u16 pml1_index = (virt >> 12) & 0x1ff;
-  u64 *pml3 = NULL;
+  u64 *pml3 = nullptr;
   if (pml4[pml4_index] & PAGE_PRESENT) {
-      pml3 = PHYS2VIRT((pml4[pml4_index] & PTE_MASK));
+      pml3 = (u64*)PHYS2VIRT((pml4[pml4_index] & PTE_MASK));
   } else {
-      pml3 = allocate_frame();
+      pml3 = (u64*)allocate_frame();
       pml4[pml4_index] = (u64)VIRT2PHYS(pml3) | PAGE_PRESENT | PAGE_WRITE;
   }
-  u64 *pml2 = NULL;
+  u64 *pml2 = nullptr;
   if (pml3[pml3_index] & PAGE_PRESENT) {
-      pml2 = PHYS2VIRT((pml3[pml3_index] & PTE_MASK));
+      pml2 = (u64*)PHYS2VIRT((pml3[pml3_index] & PTE_MASK));
   } else {
-      pml2 = allocate_frame();
+      pml2 = (u64*)allocate_frame();
       pml3[pml3_index] = (u64)VIRT2PHYS(pml2) | PAGE_PRESENT | PAGE_WRITE;
   }
 
-  u64 *pml1 = NULL;
+  u64 *pml1 = nullptr;
   if (pml2[pml2_index] & PAGE_PRESENT) {
-      pml1 = PHYS2VIRT((pml2[pml2_index] & PTE_MASK));
+      pml1 = (u64*)PHYS2VIRT((pml2[pml2_index] & PTE_MASK));
   } else {
-      pml1 = allocate_frame();
+      pml1 = (u64*)allocate_frame();
       pml2[pml2_index] = (u64)VIRT2PHYS(pml1) | PAGE_PRESENT | PAGE_WRITE;
   }
-  bit perm_mod = pml1[pml1_index] & PAGE_PRESENT;
+  bool perm_mod = pml1[pml1_index] & PAGE_PRESENT;
   pml1[pml1_index] = phys | flags;
   if (perm_mod) { flush_tlb(); }
 }
@@ -74,22 +74,22 @@ void unmap_page(void *virtptr) {
   u16 pml3_index = (virt >> 30) & 0x1ff;
   u16 pml2_index = (virt >> 21) & 0x1ff;
   u16 pml1_index = (virt >> 12) & 0x1ff;
-  u64 *pml3 = NULL;
+  u64 *pml3 = nullptr;
   if (pml4[pml4_index] & PAGE_PRESENT) {
-      pml3 = PHYS2VIRT((pml4[pml4_index] & PTE_MASK));
+      pml3 = (u64*)PHYS2VIRT((pml4[pml4_index] & PTE_MASK));
   } else {
       return;
   }
-  u64 *pml2 = NULL;
+  u64 *pml2 = nullptr;
   if (pml3[pml3_index] & PAGE_PRESENT) {
-      pml2 = PHYS2VIRT((pml3[pml3_index] & PTE_MASK));
+      pml2 = (u64*)PHYS2VIRT((pml3[pml3_index] & PTE_MASK));
   } else {
       return;
   }
 
-  u64 *pml1 = NULL;
+  u64 *pml1 = nullptr;
   if (pml2[pml2_index] & PAGE_PRESENT) {
-      pml1 = PHYS2VIRT((pml2[pml2_index] & PTE_MASK));
+      pml1 = (u64*)PHYS2VIRT((pml2[pml2_index] & PTE_MASK));
   } else {
       return;
   }
