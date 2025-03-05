@@ -40,7 +40,6 @@ make run
 - Expand the **RAM-based filesystem** with file read/write functionality  
 - Add **basic process scheduling**  
 
-
 ---
 
 ## **License**  
