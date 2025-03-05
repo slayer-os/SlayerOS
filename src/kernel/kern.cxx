@@ -18,16 +18,10 @@
 
 #include <drivers/fb_gfx.h>
 
-const char *SSE_EXT_MSG_TABLE[5] = {
-  "Unsupported",
-  "SSE",
-  "SSE3, SSE4.1, SSE4.2",
-  "SSE2",
-  "XOP (SSE5)",
-};
-extern "C" {
-  extern bool __enable_sse_ext();
-  extern bool __test_sse();
+
+namespace SSE {
+  u8 enable();
+  bool test();
 }
 void _kernel_pre_setup() {
   UART::init();
@@ -35,8 +29,8 @@ void _kernel_pre_setup() {
   Mem::Frame::init();
   Mem::Paging::init(); Log::success("Memory mapped"); Log::success("Paging initialized");
   Err::Handler::init_symbols(); Log::success("Kernel symbols mapped");
-  bool sse_ext = __enable_sse_ext();
-  if (sse_ext && __test_sse()) Log::success("SSE extensions enabled up to %s", SSE_EXT_MSG_TABLE[sse_ext]);
+
+  if (SSE::enable() && SSE::test()) Log::success("SSE extensions enabled");
   else Log::critical("Failed to enable SSE");
 }
 
