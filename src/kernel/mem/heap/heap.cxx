@@ -28,7 +28,7 @@ heap_page_t *create_heap_page(size_t size) {
     num_pages = ROUND_UP(alloc_size, FRAME_SIZE);
   }
 
-  heap_page_t *page = (heap_page_t *)allocate_frames(num_pages);
+  heap_page_t *page = (heap_page_t *)Mem::Frame::allocs(num_pages);
   
   
   page->addr = (void*)((char*)page + sizeof(heap_page_t));

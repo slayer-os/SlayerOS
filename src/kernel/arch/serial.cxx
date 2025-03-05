@@ -11,7 +11,7 @@ u8 inb(u16 port) {
 }
 
 
-void serial_init() {
+void UART::init() {
     outb(COM1 + 1, 0x00);
     outb(COM1 + 3, 0x80);
     outb(COM1 + 0, 0x03);
@@ -27,21 +27,21 @@ void serial_init() {
    outb(COM1 + 4, 0x0F);
 }
 
-bool b_serial_active() {
+bool UART::active() {
     return inb(COM1 + 5) & 1;
 }
 
-bool b_transmit_empty() {
+bool UART::transmit_empty() {
     return inb(COM1 + 5) & 0x20;
 }
 
-char read_serial() {
-    while(!b_serial_active());
+char UART::read() {
+    while(!active());
     return inb(COM1);
 }
 
-void write_serial(char data) {
-    while (!b_transmit_empty());
+void UART::write(char data) {
+    while (!transmit_empty());
     outb(COM1,data);
 }
 

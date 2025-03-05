@@ -7,7 +7,9 @@ typedef struct symbol_entry {
   const char *name;
 } symbol_entry_t;
 
-void init_symbol_table();
-char *resolve_address(u64 address);
+namespace Err::Handler {
+  void init_symbols();
+  char *resolve_address(u64 address);
+}
 
 #endif

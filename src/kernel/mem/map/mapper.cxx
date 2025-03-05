@@ -19,13 +19,13 @@ void map_kernel_code() {
   u64 data_end = ALIGN_UP((u64)&_data_end_ld, FRAME_SIZE);
  
   for (u64 text = text_start; text < text_end; text += FRAME_SIZE) {
-    map_page((void*)(text - virt_base + phys_base), (void*)text, PAGE_PRESENT | PAGE_USER);
+    Mem::Paging::map((void*)(text - virt_base + phys_base), (void*)text, Mem::Paging::PAGE_PRESENT | Mem::Paging::PAGE_USER);
   }
   for (u64 rodata = rodata_start; rodata < rodata_end; rodata += FRAME_SIZE) {
-    map_page((void*)(rodata - virt_base + phys_base), (void*)rodata, PAGE_PRESENT | PAGE_NX | PAGE_USER);
+    Mem::Paging::map((void*)(rodata - virt_base + phys_base), (void*)rodata, Mem::Paging::PAGE_PRESENT | Mem::Paging::PAGE_NX | Mem::Paging::PAGE_USER);
   }
   for (u64 data = data_start; data < data_end; data += FRAME_SIZE) {
-    map_page((void*)(data - virt_base + phys_base), (void*)data, PAGE_PRESENT | PAGE_WRITE | PAGE_NX | PAGE_USER);
+    Mem::Paging::map((void*)(data - virt_base + phys_base), (void*)data, Mem::Paging::PAGE_PRESENT | Mem::Paging::PAGE_WRITE | Mem::Paging::PAGE_NX | Mem::Paging::PAGE_USER);
   }
 }
 
@@ -39,7 +39,7 @@ void map_found_memory() {
       continue;
     }
     for (u64 page = 0; page < pages; page++) {
-      map_page((void*)(paddr + (page * FRAME_SIZE)), (void*)(vaddr + (page * FRAME_SIZE)), PAGE_PRESENT | PAGE_WRITE | PAGE_USER);
+      Mem::Paging::map((void*)(paddr + (page * FRAME_SIZE)), (void*)(vaddr + (page * FRAME_SIZE)), Mem::Paging::PAGE_PRESENT | Mem::Paging::PAGE_WRITE | Mem::Paging::PAGE_USER);
     }
   }
 }
@@ -54,7 +54,7 @@ void map_hhdm_memory() {
       continue;
     }
     for (u64 page = 0; page < pages; page++) {
-      map_page((void*)(paddr + (page * FRAME_SIZE)), (void*)(vaddr + (page * FRAME_SIZE)), PAGE_PRESENT | PAGE_WRITE | PAGE_USER);
+      Mem::Paging::map((void*)(paddr + (page * FRAME_SIZE)), (void*)(vaddr + (page * FRAME_SIZE)), Mem::Paging::PAGE_PRESENT | Mem::Paging::PAGE_WRITE | Mem::Paging::PAGE_USER);
     }
   }
 }
@@ -67,7 +67,7 @@ void map_bootloader_memory() {
       u64 paddr = entry->base;
       u64 pages = entry->length / FRAME_SIZE;
       for (u64 page = 0; page < pages; page++) {
-        map_page((void*)(paddr + (page * FRAME_SIZE)), (void*)(vaddr + (page * FRAME_SIZE)), PAGE_PRESENT | PAGE_WRITE | PAGE_USER);
+        Mem::Paging::map((void*)(paddr + (page * FRAME_SIZE)), (void*)(vaddr + (page * FRAME_SIZE)), Mem::Paging::PAGE_PRESENT | Mem::Paging::PAGE_WRITE | Mem::Paging::PAGE_USER);
       }
     }
   }
@@ -81,7 +81,7 @@ void map_framebuffer_memory() {
       u64 paddr = entry->base;
       u64 pages = entry->length / FRAME_SIZE;
       for (u64 page = 0; page < pages; page++) {
-        map_page((void*)(paddr + (page * FRAME_SIZE)), (void*)(vaddr + (page * FRAME_SIZE)), PAGE_PRESENT | PAGE_WRITE | PAGE_USER);
+        Mem::Paging::map((void*)(paddr + (page * FRAME_SIZE)), (void*)(vaddr + (page * FRAME_SIZE)), Mem::Paging::PAGE_PRESENT | Mem::Paging::PAGE_WRITE | Mem::Paging::PAGE_USER);
       }
     }
   }
@@ -89,7 +89,7 @@ void map_framebuffer_memory() {
 
 
 
-void full_memory_map() {
+void Mem::Mapper::full_map() {
   map_bootloader_memory();
   map_framebuffer_memory();
   map_found_memory();

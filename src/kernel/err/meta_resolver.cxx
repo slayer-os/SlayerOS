@@ -27,7 +27,7 @@ void sort_symbol_table() {
   }
 }
 
-void init_symbol_table() {
+void Err::Handler::init_symbols() {
   struct elf_desc desc;
   elf_parse(&desc, boot_ctx.kernel_file->address, boot_ctx.kernel_file->size);
 
@@ -48,7 +48,7 @@ void init_symbol_table() {
 
 
 extern char *demangle_alloc_symbol(const char *name);
-char *resolve_address(u64 address) {
+char *Err::Handler::resolve_address(u64 address) {
   // find the symbol or the closest symbol lower bound (+offset)
   symbol_entry_t *entry = nullptr;
   bool exact = false;

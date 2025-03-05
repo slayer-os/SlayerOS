@@ -1,6 +1,6 @@
 #include <bootloader/limine.h>
 
-bootloader_ctx_t boot_ctx;
+BootloaderCtx boot_ctx;
 
 struct limine_bootloader_info_request limine_info = {
     .id = LIMINE_BOOTLOADER_INFO_REQUEST,
@@ -46,7 +46,7 @@ void sort_memmap() {
   }
 }
 
-void bootloader_gather() {
+void BootloaderCtx::gather() {
   boot_ctx.name = limine_info.response->name;
   boot_ctx.version = limine_info.response->version;
   boot_ctx.memmap_entries_count = limine_memmap.response->entry_count;

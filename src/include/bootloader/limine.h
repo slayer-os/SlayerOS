@@ -3,7 +3,8 @@
 #include <libc/types.h>
 #include <limine.h>
 
-typedef struct bootloader_ctx {
+class BootloaderCtx {
+public:
   const char *name;
   const char *version;
   uint64_t memmap_entries_count;
@@ -17,10 +18,10 @@ typedef struct bootloader_ctx {
    * LMFAO, self-aware kernel
    * this is meta-introspecting stuff
   */
-} bootloader_ctx_t;
 
-void bootloader_gather();
+  void gather();
+};
 
-extern bootloader_ctx_t boot_ctx;
+extern BootloaderCtx boot_ctx;
 
 #endif

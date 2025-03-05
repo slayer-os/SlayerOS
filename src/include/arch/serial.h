@@ -6,11 +6,14 @@
 
 void outb(u16 port, u8 data);
 u8 inb(u16 port);
-void serial_init();
-bool b_serial_active();
-bool b_transmit_empty();
-char read_serial();
-void write_serial(char data);
 void io_wait();
+namespace UART {
+  void init();
+  bool active();
+  bool transmit_empty();
+  char read();
+  void write(char data);
+}
+
 
 #endif

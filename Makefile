@@ -28,8 +28,8 @@ ISO_DIR := build/iso
 include misc/make/base.mk
 override CFLAGS += -DSLAY_VERSION=\"$(VERSION)\"
 
-KERN_SOURCES := $(shell find $(KERNEL_SRC) -name '*.c' -or -name '*.s')
-KERN_OBJECTS := $(patsubst $(KERNEL_SRC)/%.c, $(OBJ_DIR)/%.o, $(patsubst $(KERNEL_SRC)/%.s, $(OBJ_DIR)/%.o, $(KERN_SOURCES)))
+KERN_SOURCES := $(shell find $(KERNEL_SRC) -name '*.cxx' -or -name '*.s')
+KERN_OBJECTS := $(patsubst $(KERNEL_SRC)/%.cxx, $(OBJ_DIR)/%.o, $(patsubst $(KERNEL_SRC)/%.s, $(OBJ_DIR)/%.o, $(KERN_SOURCES)))
 
 LIMINE_MAKEFILE := $(LIMINE_DIR)/Makefile
 LIBC_MAKEFILE := $(LIBC_DIR)/Makefile
@@ -64,7 +64,7 @@ $(LIMINE_BIN): $(LIMINE_MAKEFILE)
 
 # Kernel
 
-$(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.c
+$(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.cxx
 	@mkdir -p $(@D)
 	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@
 

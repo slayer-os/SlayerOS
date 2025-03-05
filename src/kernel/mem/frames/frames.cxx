@@ -7,7 +7,7 @@ u32 latest_frame=0;
 u32 available_frames;
 void *base_addr;
 
-void *allocate_frame() {
+void *Mem::Frame::alloc() {
   while (latest_frame < available_frames && frames[latest_frame]) {
     latest_frame++;
   }
@@ -22,7 +22,7 @@ void *allocate_frame() {
 }
 
 
-void *allocate_frames(size_t count) {
+void *Mem::Frame::allocs(size_t count) {
   // find adjacent free frames
   u32 start_frame = latest_frame;
   u32 frame_count = 0;
@@ -49,13 +49,13 @@ void *allocate_frames(size_t count) {
   return frame;
 }
 
-void free_frame(void *frame) {
+void Mem::Frame::free(void *frame) {
   u32 frame_num = (u32)((u64)frame - (u64)base_addr) / FRAME_SIZE;
   frames[frame_num] = 0;
   latest_frame = frame_num; // Set indexing start point to the freed frame
 }
 
-void init_frame_alloc() {
+void Mem::Frame::init() {
   struct limine_memmap_entry *bitmap_entry = boot_ctx.memmap_entries[1];
   nframes = bitmap_entry->length / FRAME_SIZE;
   frames = (bool *)PHYS2VIRT(bitmap_entry->base);

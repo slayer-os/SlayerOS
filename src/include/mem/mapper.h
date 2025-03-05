@@ -4,6 +4,8 @@
 #include <bootloader/limine.h>
 #include <mem/paging.h>
 
-void full_memory_map();
+namespace Mem::Mapper {
+  void full_map();
+}
 
 #endif
