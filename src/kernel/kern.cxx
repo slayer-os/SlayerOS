@@ -40,6 +40,26 @@ void _graphics_setup() {
   fb::gfx::splash::ascii_logo(344, 212, 1, 0xFFFFFF);
 }
 
+void u512_tests() {
+  u512 x = 0x1234567890abcdef;
+  u512 y = 0x1234567890abcdef;
+  u512 z = x + y;
+  u512 w = x * y;
+
+  assert (x == y, "x != y");
+  assert (z == 0x2468acf121579bde_u512, "z != 0x2468acf13579bde");
+  assert (w == 0x14b66dc328828bca6475f09a2f2a521_u512, "w != 0x14b66dc328828bca6475f09a2f2a521");
+  Log::success("[u512] (Arithmetic) OK");
+
+  //u512 a = 0x1234567890abcdef;
+  //u512 b = 0x1234567890abcdeffedcba0987654321_u512;
+  //u512 q = b / a;
+  //u512 c = b % a;
+  // Division not working properly, q != 0x1000000000000000d
+  // Modular not working properly, c != 0x123455ea2eabcdfe
+  Log::info("[u512] (Modular) TODO");
+}
+
 void _kernel_start() {
   _kernel_pre_setup();
   Log::print("\n      ------------------- \n\n");
@@ -51,6 +71,8 @@ void _kernel_start() {
   Log::debug("Screen width: %d, height: %d", fb::gfx::screen::width(), fb::gfx::screen::height());
   Log::debug("Heap allocated at %p", kmalloc(0x100));
   Log::debug("strcpy is: %s", Err::Handler::resolve_address((u64)strcpy));
+
+  u512_tests();
 }
 
 extern "C" {
