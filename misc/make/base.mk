@@ -31,7 +31,7 @@ override KERN_LDFLAGS += -m elf_x86_64 \
 
 QEMU_CPU_MODEL := host
 QEMU_CPUID :=\
-						+xsave,+ssse3,+sse4.1,+sse4.2,+x2apic,+avx,+avx2,enforce
+						+xsave,+ssse3,+sse4.1,+sse4.2,+x2apic,+avx,enforce
 
 QEMU_ARGS := \
 						 --enable-kvm -cpu $(QEMU_CPU_MODEL),$(QEMU_CPUID) -smp 2,maxcpus=8 \

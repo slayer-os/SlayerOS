@@ -51,12 +51,14 @@ void u512_tests() {
   assert (w == 0x14b66dc328828bca6475f09a2f2a521_u512, "w != 0x14b66dc328828bca6475f09a2f2a521");
   Log::success("[u512] (Arithmetic) OK");
 
-  //u512 a = 0x1234567890abcdef;
-  //u512 b = 0x1234567890abcdeffedcba0987654321_u512;
-  //u512 q = b / a;
-  //u512 c = b % a;
-  // Division not working properly, q != 0x1000000000000000d
-  // Modular not working properly, c != 0x123455ea2eabcdfe
+  u512 a = 0x1234567890abcdef;
+  u512 b = 0x1234567890abcdeffedcba0987654321_u512;
+  u512 q = b / a;
+  u512 c = b % a;
+  u512 e = u512::expmod(a, b, 0x123456789abcdef0123456_u512);
+  assert(q == 0x1000000000000000d_u512, "q != 0x1000000000000000d");
+  assert(c == 0x123455ea2eabcdfe, "c != 0x123455ea2eabcdfe");
+  Log::debug("e: %#qx", e);
   Log::info("[u512] (Modular) TODO");
 }
 
