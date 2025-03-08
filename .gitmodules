@@ -1,0 +1,12 @@
+[submodule "drivers"]
+  path = drivers
+  url = ../drivers.git
+  branch = main
+[submodule "libc"]
+  path = libc
+  url = ../libc.git
+  branch = main
+[submodule "limine"]
+  path = limine
+  url = https://github.com/limine-bootloader/limine/
+  branch = v9.x-binary
