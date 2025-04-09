@@ -1,0 +1,96 @@
+      Chiyo’s Creative Licensing Version 1
+                         (CCLV1)
+
+Copyright (C) [YEAR] [COPYRIGHT HOLDER]
+
+This document declares that upon acquisition, the purchaser of any Media—be it software, creative content, or any form thereof—receives COMPLETE OWNERSHIP over that Media. Payment for access or consumption is recognized as an addition of full ownership rights, not merely a license to use the content.
+
+                            PREAMBLE
+
+Given rapid technological advancements and the continued importance of owning physical media, it is essential to redefine how consumers interact with creative works. Traditionally, payment only granted limited usage rights. This document proposes that buying media should confer full ownership. Additionally, as modern creative processes often involve reverse engineering, the nature of creative works is changing. This document argues that legally deconstructing and rebuilding a game or other media makes the resulting work entirely yours.
+
+                          TERMS OF OWNERSHIP
+
+0. Definitions.
+   a) "Media" means any creative work covered by this document, including software, textual content, audio recordings, musical compositions, and any combination thereof, irrespective of its digital or physical form.
+   b) "Source Media" denotes the original, preferred form of the Media suitable for analysis, modification, or transformation.
+   c) "Modified Media" or "Derivative Work" refers to any work derived from the original Media, including that produced by reverse engineering or any other transformative process as well as any derivative works created from the Modified Media or Derivative Work by other parties.
+   d) "Modern Technologies" include, but are not limited to, Artificial Intelligence systems (such as large language models), quantum computing, and any emerging technological platforms.
+   e) "Physical Media" refers to tangible embodiments of the Media, such as printed copies, CDs, DVDs, or any other physical storage medium.
+   f) "Complete Ownership" means the absolute and full rights to use, modify, reverse engineer, distribute, and otherwise control the Media without the restrictions typical of a traditional license.
+  g) "Purchase" means the act of obtaining Media through a financial transaction involving monetary exchange. This includes payments made via credit card, electronic transfer, cryptocurrency, or any other officially recognized method of payment. A purchase is confirmed upon receipt of payment by the seller or provider and a record of the transaction is established.
+  h) "Acquisition" means the act of obtaining Media through any means, including purchase, gift, donation, or other lawful transfer. Acquisition is confirmed when the recipient gains possession or control of the Media, regardless of whether a monetary exchange occurred. This includes but is not limited to Gifts (as it is expressly defined in definition clause i) Donations (as it is expressly defined in definition clause j) and any form of non standard acquisition method, assuming the transfer is lawful and excludes theft or any criminal means.
+  i) “Gifts” are defined as but are not limited to media transferred without monetary exchange as a voluntary act of giving.
+  j) “Donations” are defined as Media transferred without monetary exchange for charitable or other non-profit purposes
+
+
+1. Transfer of Ownership.
+   a) Upon purchase, receipt, or any other lawful acquisition of the Media, the acquirer is granted COMPLETE OWNERSHIP of that Media.
+   b) Payment for or consumption of the Media constitutes an addition and/or acquisition of full ownership rights, as opposed to a limited license. Such transfer is unconditional and irrevocable, subject only to the boundaries of applicable law.
+   c) This complete transfer of rights covers all forms and manifestations of the Media, whether digital, physical, or otherwise transformed by Modern Technologies.
+
+2. Rights Conferred to the Owner.
+   a) Use and Modification.
+      i. The owner is entitled to use the Media on any platform or environment, including those that incorporate Modern Technologies and Physical Media.
+      ii. The owner may reverse engineer, modify, or otherwise transform the Media, thereby creating Derivative Works that are fully owned by the owner.
+   b) Distribution.
+      i. The owner has the right to distribute both the original Media and any Derivative Works.
+      ii. When distributing the Media, the owner must declare that complete ownership rights have been transferred, ensuring recipients are aware that the full bundle of rights accompanies the Media.
+   c) Reverse Engineering and Transformation.
+      i. The process of reverse engineering—from breaking down models, code, voice recordings, and musical elements to reassembling them into a new, cohesive whole—is expressly permitted.
+      ii. Any substantial transformation achieved through such processes is deemed an exercise of the owner’s complete rights over the Media.
+
+3. Payment and Ownership Principle.
+   a) It is hereby affirmed that payment for the Media is tantamount to acquiring complete ownership, transferring full title and rights to the purchaser.
+   b) The owner’s rights extend beyond mere usage, encompassing modification, redistribution, and any lawful transformation of the Media.
+   c) Ownership is not confined to the original delivery form; it extends to all lawful Derivative Works produced by the owner.
+
+4. Obligations Upon Distribution.
+   a) Any distribution of the Media—whether in its original form or as a Derivative Work—must include a clear declaration of the complete ownership rights transferred under this document.
+   b) The owner shall not impose any restrictions that conflict with the complete ownership rights conferred herein.
+   c) All distributed versions must document any modifications or transformations to maintain transparency regarding the evolution of the Media.
+
+5. Compliance with Applicable Law.
+   a) The complete ownership rights granted herein are subject to the limitations and exceptions of applicable law, including those governing reverse engineering, modification, and redistribution.
+   b) In jurisdictions where certain practices, such as reverse engineering, face legal restrictions, the owner’s rights shall be exercised only to the extent permitted by law.
+   c) This document recognizes that legal interpretations of ownership may evolve in response to Modern Technologies and is intended to align with current and future legal standards.
+
+6. Disclaimer of Warranty.
+   a) The Media is provided “as is” without any warranty, express or implied, including warranties of merchantability or fitness for a particular purpose.
+   b) The owner assumes all risks associated with the use, modification, or redistribution of the Media and releases the original creator from any liabilities arising therefrom.
+
+7. Irrevocability of Ownership.
+   a) Once the Media has been acquired and the complete ownership rights have been transferred, these rights cannot be revoked.
+   b) Any attempt to reclaim ownership after the lawful transfer of the Media shall be deemed void and subject to legal challenge.
+
+8. Indemnification.
+
+  a) The owner agrees to indemnify and hold harmless the original creator of the Media from any claims, damages, or legal actions arising from the owner’s use, modification, distribution, or transformation of the Media.
+
+  b) This indemnification extends to any Derivative Works created by the owner.
+
+  c) The owner is solely responsible for ensuring that their use of the Media and any Derivative Works complies with all applicable laws and does not infringe upon the rights of any third party.
+
+9. Miscellaneous.
+   a) Should any provision of this document be declared unenforceable, the remaining provisions shall continue in full force and effect.
+   b) This document represents the entire agreement regarding the complete ownership of the Media and supersedes any prior agreements, whether written or oral.
+   c) The interpretation of this document shall be guided by the principles of complete ownership as recognized by current and future legal standards.
+
+  d) Any ambiguity in the interpretation of this document shall be resolved in favor of granting the broadest possible rights to the owner of the Media.
+
+  e) Failure to enforce any provision of this document by the original creator shall not be construed as a waiver of that provision or the right to enforce it at a later time.
+
+  f) This document shall be binding upon and inure to the benefit of the parties hereto and their respective heirs, successors, and assigns.
+
+  g) Notices related to this document shall be considered adequately given if delivered in writing, sent via email to the last known address of the recipient, or posted publicly in a manner reasonably likely to reach the recipient.
+
+10. Amendment and modification
+  a) This Chiyo’s Creative Licensing Version 1 (CCLV1) document is provided as is. No party, excluding the original creator (defined as the person behind & with sole access to the accounts associated with the internet personality known as Chiyo Tanaka, Chiyo, the discord profile Chiyo.exe, the github profile Chiyoluvzu, the tiktok profile chiyothefemboy & the website https://chiyo.wtf ) may unilaterally alter, amend, or modify this document except as required by applicable law or judicial decree. Any such modification must be limited to the minimum necessary to comply with the legal requirement.
+
+  b) Any purported amendment, alteration, or modification of this document not compelled by legal requirement shall be considered void and of no effect. The original, unaltered text of CCLV1 shall remain the definitive and binding version.
+
+  c) In the event of a legally mandated modification, the party making the modification must clearly and publicly document the specific legal requirement necessitating the change and the precise alterations made. This documentation must accompany any distributed version of the modified CCLV1.
+
+
+
+                    END OF CHIYO’S CREATIVE LICENSING VERSION 1
