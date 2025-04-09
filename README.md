@@ -43,4 +43,4 @@ make run
 ---
 
 ## **License**  
-SlayerOS is an experimental project and is licensed under the GPL 3.0 (GNU Public License 3.0) with love <3
+SlayerOS is an experimental project and is licensed under the CCLV1 (Chiyo's Creative License Version 1) with love <3
