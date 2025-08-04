@@ -11,6 +11,14 @@ extern "C" void __assert_fail(const char*, const char*, unsigned, const char*) {
   Log::debug("Failed assertion");
   while (1);
 }
+extern "C" void *__memcpy_chk(void *dest, const void *src, size_t len, size_t destlen) {
+  (void)destlen;
+  uint8_t *d = (uint8_t *)dest;
+  const uint8_t *s = (const uint8_t *)src;
+  for (size_t i = 0; i < len; ++i)
+      d[i] = s[i];
+  return dest;
+}
 
 void dump_address(u64 value) {
   Log::print("\x1b[33m");
