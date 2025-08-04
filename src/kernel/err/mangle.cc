@@ -1,5 +1,5 @@
-#include <libc/string.h>
-#include <libc/memory.h>
+#include <klib/string.h>
+#include <klib/memory.h>
 
 #include <dbg/log.h>
 
@@ -45,7 +45,9 @@ void unmangle_name(char *buffer, const char *name, u32 *i) {
         buffer[j++] = ':';
       }
     }
+    (*i)++;
   }
+  buffer[j] = '\0';
 }
 
 void copy_function_name(char *buffer, const char *name, u32 *i, u32 *j, u32 length) {
@@ -153,10 +155,16 @@ char *demangle_alloc_symbol(const char *name) {
   }
 
   u32 i = 2, j = 0;
-  char length_str[16];
-  u32 length = parse_function_length(name, &i, length_str);
-
-  copy_function_name(buffer, name, &i, &j, length);
+  
+  if (name[i] == 'N') {
+    unmangle_name(buffer, name, &i);
+    j = strlen(buffer);
+    buffer[j++] = '(';
+  } else {
+    char length_str[16];
+    u32 length = parse_function_length(name, &i, length_str);
+    copy_function_name(buffer, name, &i, &j, length);
+  }
 
   char old_params[64][16];
   u32 old_params_i = 0;

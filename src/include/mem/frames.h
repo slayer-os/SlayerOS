@@ -1,6 +1,5 @@
-#ifndef FRAME_ALLOCATOR_H
-#define FRAME_ALLOCATOR_H
-#include <libc/types.h>
+#pragma once
+#include <klib/types.h>
 #include <bootloader/limine.h>
 
 #define FRAME_SIZE       0x1000
@@ -14,4 +13,3 @@ namespace Mem::Frame {
   void init();
 }
 
-#endif

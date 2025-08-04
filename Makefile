@@ -4,12 +4,15 @@ LIMINE_DIR := limine
 LIMINE_BIN := $(LIMINE_DIR)/limine
 LIMINE_CFG := misc/boot/limine.conf
 
-LIBC_DIR := libc
+KLIB_DIR := klib
 DRIVERS_DIR := drivers
+ZYDIS_DIR := zydis
 
 INCLUDES := -I$(shell realpath $(LIMINE_DIR)) \
-						-I$(LIBC_DIR)/src/include \
+						-I$(KLIB_DIR)/src/include \
 						-I$(DRIVERS_DIR)/src/include \
+						-I$(ZYDIS_DIR)/include \
+						-I$(ZYDIS_DIR)/dependencies/zycore/include \
 						-Isrc/include
 
 KERNEL_SRC := src/kernel
@@ -18,8 +21,9 @@ KERNEL_BIN := build/kernel.bin
 
 OBJ_DIR := build/obj
 
-LIBC_LIB := $(LIBC_DIR)/build/libc.a
+KLIB_LIB := $(KLIB_DIR)/build/klib.a
 DRIVERS_LIB := $(DRIVERS_DIR)/build/drivers.a
+ZYDIS_LIB := $(ZYDIS_DIR)/build/libZydis.a
 
 ISO_FILE := build/slayer_$(VERSION).iso
 ISO_DIR := build/iso
@@ -28,11 +32,11 @@ ISO_DIR := build/iso
 include misc/make/base.mk
 override CFLAGS += -DSLAY_VERSION=\"$(VERSION)\"
 
-KERN_SOURCES := $(shell find $(KERNEL_SRC) -name '*.cxx' -or -name '*.s')
-KERN_OBJECTS := $(patsubst $(KERNEL_SRC)/%.cxx, $(OBJ_DIR)/%.o, $(patsubst $(KERNEL_SRC)/%.s, $(OBJ_DIR)/%.o, $(KERN_SOURCES)))
+KERN_SOURCES := $(shell find $(KERNEL_SRC) -name '*.cc' -or -name '*.s')
+KERN_OBJECTS := $(patsubst $(KERNEL_SRC)/%.cc, $(OBJ_DIR)/%.o, $(patsubst $(KERNEL_SRC)/%.s, $(OBJ_DIR)/%.o, $(KERN_SOURCES)))
 
 LIMINE_MAKEFILE := $(LIMINE_DIR)/Makefile
-LIBC_MAKEFILE := $(LIBC_DIR)/Makefile
+KLIB_MAKEFILE := $(KLIB_DIR)/Makefile
 DRIVERS_MAKEFILE := $(DRIVERS_DIR)/Makefile
 
 
@@ -41,21 +45,27 @@ all: $(ISO_FILE)
 $(LIMINE_MAKEFILE):
 	git submodule update --init --recursive
 
-$(LIBC_MAKEFILE):
+$(KLIB_MAKEFILE):
 	git submodule update --init --recursive
 
 $(DRIVERS_MAKEFILE):
 	git submodule update --init --recursive
 
-# LIBC
+# KLIB
 
-$(LIBC_LIB): $(LIBC_MAKEFILE)
-	$(MAKE) -C $(LIBC_DIR)
+$(KLIB_LIB): $(KLIB_MAKEFILE)
+	$(MAKE) -C $(KLIB_DIR)
 
 # Drivers
 
 $(DRIVERS_LIB): $(DRIVERS_MAKEFILE)
 	$(MAKE) -C $(DRIVERS_DIR)
+
+# Zydis
+
+$(ZYDIS_LIB):
+	cmake -B $(ZYDIS_DIR)/build -S $(ZYDIS_DIR) -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-fno-stack-protector"
+	cmake --build $(ZYDIS_DIR)/build -j$(nproc) --target Zydis
 
 # Limine
 
@@ -64,16 +74,16 @@ $(LIMINE_BIN): $(LIMINE_MAKEFILE)
 
 # Kernel
 
-$(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.cxx
+$(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.cc
 	@mkdir -p $(@D)
-	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.s
 	@mkdir -p $(@D)
-	$(CXX) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL_BIN): $(LIBC_LIB) $(DRIVERS_LIB) $(KERN_OBJECTS)
-	$(LD) $(KERN_LDFLAGS) -o $(KERNEL_BIN) $(KERN_OBJECTS) $(DRIVERS_LIB) $(LIBC_LIB) 
+$(KERNEL_BIN): $(ZYDIS_LIB) $(KLIB_LIB) $(DRIVERS_LIB) $(KERN_OBJECTS)
+	$(LD) $(KERN_LDFLAGS) -o $(KERNEL_BIN) $(KERN_OBJECTS) $(DRIVERS_LIB) $(KLIB_LIB) $(ZYDIS_LIB)
 
 
 $(ISO_FILE): $(LIMINE_BIN) $(KERNEL_BIN)
@@ -112,7 +122,8 @@ remote:
 
 clean:
 	rm -rf build
-	$(MAKE) -C $(LIBC_DIR) clean
+	$(MAKE) -C $(KLIB_DIR) clean
 	$(MAKE) -C $(DRIVERS_DIR) clean
+	rm -r $(ZYDIS_DIR)/build
 
-.PHONY: all clean run runint $(LIBC_LIB) $(DRIVERS_LIB)
+.PHONY: all clean run runint $(KLIB_LIB) $(DRIVERS_LIB)

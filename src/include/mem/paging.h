@@ -1,6 +1,5 @@
-#ifndef PAGING_H
-#define PAGING_H
-#include <libc/types.h>
+#pragma once
+#include <klib/types.h>
 #include <mem/frames.h>
 
 #define ROUND_DOWN(x)     ((x) & ~(0x1000 - 1))
@@ -24,4 +23,3 @@ namespace Mem::Paging {
   void unmap(void *virt);
 }
 
-#endif

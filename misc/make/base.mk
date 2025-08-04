@@ -19,7 +19,8 @@ override CFLAGS := -g -fno-inline-small-functions \
 	-mno-sse2 \
 	-Wno-missing-field-initializers \
 	-Wno-pointer-arith \
-	-O3
+	-O3 \
+	-gdwarf-4
 
 override LIBC_LDFLAGS := -nostdlib -z max-page-size=0x1000
 override KERN_LDFLAGS += -m elf_x86_64 \

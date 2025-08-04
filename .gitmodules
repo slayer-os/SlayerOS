@@ -3,10 +3,16 @@
   url = ../drivers.git
   branch = main
 [submodule "libc"]
-  path = libc
-  url = ../libc.git
+  path = klib
+  url = ../klib.git
   branch = main
 [submodule "limine"]
   path = limine
   url = https://github.com/limine-bootloader/limine/
   branch = v9.x-binary
+[submodule "klib"]
+	path = klib
+	url = git@github.com:slayer-os/klib.git
+[submodule "zydis"]
+	path = zydis
+	url = git@github.com:zyantific/zydis.git

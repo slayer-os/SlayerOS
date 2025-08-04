@@ -1,6 +1,6 @@
 #include <mem/paging.h>
 #include <mem/mapper.h>
-#include <libc/string.h>
+#include <klib/string.h>
 
 #define PTE_MASK 0x0000FFFFFFFFF000
 

@@ -1,6 +1,5 @@
-#ifndef LIMINE_INTERFACE_H
-#define LIMINE_INTERFACE_H
-#include <libc/types.h>
+#pragma once
+#include <klib/types.h>
 #include <limine.h>
 
 class BootloaderCtx {
@@ -24,4 +23,3 @@ public:
 
 extern BootloaderCtx boot_ctx;
 
-#endif

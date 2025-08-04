@@ -1,5 +1,5 @@
 #include <mem/frames.h>
-#include <libc/string.h>
+#include <klib/string.h>
 
 static bool *frames;
 static size_t nframes;

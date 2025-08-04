@@ -1,6 +1,5 @@
-#ifndef SERIAL_H
-#define SERIAL_H
-#include <libc/types.h>
+#pragma once
+#include <klib/types.h>
 
 #define COM1 0x3F8
 
@@ -16,4 +15,3 @@ namespace UART {
 }
 
 
-#endif

@@ -1,6 +1,6 @@
 #include <dbg/log.h>
 #include <stdarg.h>
-#include <libc/string.h>
+#include <klib/string.h>
 #include <arch/serial.h>
 
 void print_serial(const char *message) {

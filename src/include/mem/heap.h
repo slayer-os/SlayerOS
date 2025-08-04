@@ -1,6 +1,5 @@
-#ifndef HEAP_ALLOCATOR_H
-#define HEAP_ALLOCATOR_H
-#include <libc/types.h>
+#pragma once
+#include <klib/types.h>
 #include <mem/frames.h>
 #include <mem/paging.h>
 
@@ -24,4 +23,3 @@ bool kfree(void *addr);
 //void *krealloc(void *addr, size_t size);
 
 
-#endif
