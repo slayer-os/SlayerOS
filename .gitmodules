@@ -2,23 +2,23 @@
   path = drivers
   url = ../drivers.git
   branch = main
-[submodule "libc"]
-  path = klib
+[submodule "klib"]
+	path = klib
   url = ../klib.git
   branch = main
 [submodule "limine"]
 	path = deps/limine
   url = https://github.com/limine-bootloader/limine/
   branch = v9.x-binary
-[submodule "klib"]
-	path = klib
-	url = git@github.com:slayer-os/klib.git
 [submodule "zydis"]
 	path = deps/zydis
-	url = git@github.com:zyantific/zydis.git
+  url = https://github.com/zyantific/zydis.git
+  branch = main
 [submodule "deps/uacpi"]
 	path = deps/uacpi
-	url = git@github.com:uACPI/uACPI.git
+  url = https://github.com/uACPI/uACPI.git
+  branch = main
 [submodule "deps/flanterm"]
 	path = deps/flanterm
-	url = https://codeberg.org/mintsuki/flanterm.git
+  url = https://codeberg.org/mintsuki/flanterm.git
+  branch = main
