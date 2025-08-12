@@ -21,4 +21,4 @@
 	url = git@github.com:uACPI/uACPI.git
 [submodule "deps/flanterm"]
 	path = deps/flanterm
-	url = git@codeberg.org:mintsuki/flanterm.git
+	url = https://codeberg.org/mintsuki/flanterm.git
