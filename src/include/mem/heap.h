@@ -6,7 +6,7 @@
 
 typedef struct heap_segment {
   void *addr;
-  size_t size;
+  usize size;
   bool free;
   struct heap_segment *next;
 } heap_segment_t;
@@ -18,8 +18,8 @@ typedef struct heap_page {
   struct heap_page *next;
 } heap_page_t;
 
-void *kmalloc(size_t size);
+void *kmalloc(usize size);
 bool kfree(void *addr);
-//void *krealloc(void *addr, size_t size);
+//void *krealloc(void *addr, usize size);
 
 

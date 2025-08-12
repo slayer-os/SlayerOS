@@ -5,10 +5,12 @@
 override CFLAGS := -g -fno-inline-small-functions \
 	-Wall \
 	-Wextra \
-	-std=c++17 \
+	-std=c++20\
 	-ffreestanding \
 	-fno-stack-protector \
 	-fno-stack-check \
+	-fno-omit-frame-pointer \
+	-fno-optimize-sibling-calls \
 	-fno-lto \
 	-m64 \
 	-march=x86-64 \

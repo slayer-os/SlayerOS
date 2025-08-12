@@ -11,17 +11,17 @@ extern "C" void __assert_fail(const char*, const char*, unsigned, const char*) {
   Log::debug("Failed assertion");
   while (1);
 }
-extern "C" void *__memcpy_chk(void *dest, const void *src, size_t len, size_t destlen) {
+extern "C" void *__memcpy_chk(void *dest, const void *src, usize len, usize destlen) {
   (void)destlen;
   uint8_t *d = (uint8_t *)dest;
   const uint8_t *s = (const uint8_t *)src;
-  for (size_t i = 0; i < len; ++i)
+  for (usize i = 0; i < len; ++i)
       d[i] = s[i];
   return dest;
 }
 
 void dump_address(u64 value) {
-  Log::print("\x1b[33m");
+  Log::print("\x1b[33;1m0x");
   char buf[17];
   buf[16] = '\0';
 
@@ -31,23 +31,53 @@ void dump_address(u64 value) {
     value >>= 4;
   }
   Log::print(buf);
+  Log::print("\x1b[0m");
 }
 
-int Err::Handler::dump_at_addr(u64 address) {
+void Err::Handler::backtrace(void **rbp) {
+  for (int i = 0; i < 16 && rbp; ++i) {
+    void* rip = *(rbp + 1);
+    if (!rip) break;
+
+    if (rip > (void*)0xffffffff80000000) {
+      Addr2LineResult a2l_res = DWARF::addr2line_lookup(Err::Handler::kernel_desc(), (u64)rip-1);
+      
+      if (a2l_res.found) {
+        struct search_result result = Err::Handler::resolve_address(a2l_res.address);
+        const char *fn_repr = Err::Handler::search_repr(a2l_res.address, result);
+        Log::printf("\x1b[90m│\x1b[0m   \x1b[90m[%d]\x1b[0m \x1b[31m%s\x1b[0m  @  \x1b[34m%s\x1b[0m:\x1b[36m%d\x1b[0m\n", i, fn_repr, a2l_res.file, a2l_res.line);
+      } else {
+        Log::printf("\x1b[90m│\x1b[0m   \x1b[90m[%d]\x1b[0m \x1b[31m%p\x1b[0m\n", i, rip);
+      }
+    }
+    rbp = (void**)(*rbp);
+  }
+}
+
+int Err::Handler::dump_at_addr(u64 address, void **rbp, u64 disas_address) {
+  if (rbp == nullptr)
+    rbp = (void**)__builtin_frame_address(0);
+  if (disas_address == 0)
+    disas_address = address;
   struct search_result result = Err::Handler::resolve_address(address);
   if (result.entry == nullptr) return -1;
   const char *fn_repr = Err::Handler::search_repr(address, result);
   Addr2LineResult a2l_res = DWARF::addr2line_lookup(Err::Handler::kernel_desc(), address);
 
-  Log::print("\n▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰\n\n");
-  Log::printf(" ≻ \x1b[32m%s:\n\x1b[0m", fn_repr);
+  Log::print("\n\x1b[90m┌────────────────────────────────────────────────────────────────────────────────────────┐\x1b[0m\n");
+  Log::printf("\x1b[90m│\x1b[0m \x1b[1;32m► %s\x1b[0m\n", fn_repr);
   if (a2l_res.found) {
-    Log::printf("  ⤷  \x1b[34m%s\x1b[0m:\x1b[36m%d\x1b[0m\n", a2l_res.file, a2l_res.line);
+    Log::printf("\x1b[90m│\x1b[0m   \x1b[34m%s\x1b[0m:\x1b[36m%d\x1b[0m\n", a2l_res.file, a2l_res.line);
   }
-  Log::print("\n");
+  Log::print("\x1b[90m│\x1b[0m\n");
+
+
+  Log::printf("\x1b[90m│\x1b[0m \x1b[1;32mBacktrace:\x1b[0m\n");
+  Err::Handler::backtrace(rbp);
+  Log::print("\x1b[90m│\x1b[0m\n");
 
   const u64 SYMBOL_START_THRESHOLD = 96;
-  u64 offset_from_symbol = address - result.entry->address;
+  u64 offset_from_symbol = disas_address - result.entry->address;
   
   ZyanU8 *data = (ZyanU8 *)result.entry->address;
   ZyanU64 runtime_address;
@@ -75,7 +105,7 @@ int Err::Handler::dump_at_addr(u64 address) {
       instruction_addresses[instruction_count % 32] = runtime_address;
       instruction_count++;
       
-      if (runtime_address >= address) {
+      if (runtime_address >= disas_address) {
         break;
       }
       
@@ -109,11 +139,15 @@ int Err::Handler::dump_at_addr(u64 address) {
         /* length:          */ result.entry->size - offset,
         /* instruction:     */ &instruction
     ))) {
-    if (runtime_address == address) {
-      Log::print("\x1b[4m• ");
+    if (disas_address >= runtime_address && disas_address < runtime_address + instruction.info.length) {
+      Log::print("\x1b[90m│\x1b[0m \x1b[41;1;37m▶ ");
+      dump_address(runtime_address);
+      Log::printf("  %s\x1b[0m", instruction.text);
+    } else {
+      Log::print("\x1b[90m│\x1b[0m   ");
+      dump_address(runtime_address);
+      Log::printf("\x1b[90m  %s\x1b[0m", instruction.text);
     }
-    dump_address(runtime_address);
-    Log::printf("\x1b[34m  %s", instruction.text);
     
     bool is_call = (instruction.info.mnemonic == ZYDIS_MNEMONIC_CALL);
     bool is_lea = (instruction.info.mnemonic == ZYDIS_MNEMONIC_LEA);
@@ -147,7 +181,7 @@ int Err::Handler::dump_at_addr(u64 address) {
             const char* symbol_repr = Err::Handler::search_repr(target_address, symbol_result);
             if (symbol_repr && symbol_repr[0] != '\0') {
               if (symbol_repr[0] != '0' || symbol_repr[1] != 'x') {
-                Log::printf("  \x1b[36m; %s\x1b[0m", symbol_repr);
+                Log::printf("\x1b[96m  → %s\x1b[0m", symbol_repr);
               }
             }
           }
@@ -156,12 +190,12 @@ int Err::Handler::dump_at_addr(u64 address) {
       }
     }
     
-    Log::print("\n\x1b[0m");
+    Log::print("\n");
     offset += instruction.info.length;
     runtime_address += instruction.info.length;
     if (i >= instructions_to_show - 1) break;
     i++;
   }
-  Log::print("\n▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰\n\n");
+  Log::print("\x1b[90m└────────────────────────────────────────────────────────────────────────────────────────┘\x1b[0m\n\n");
   return 0;
 }

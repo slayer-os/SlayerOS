@@ -21,5 +21,6 @@ namespace Mem::Paging {
   void map(void *phys, void *virt, u64 flags);
   u32 map_range(void *phys, void *virt, u64 size, u64 flags);
   void unmap(void *virt);
+  void* map_mmio(u64 phys_addr, usize size);
 }
 

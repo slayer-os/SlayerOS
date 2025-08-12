@@ -12,5 +12,6 @@ namespace Log {
   int success(const char *format, ...);
   int running(const char *format, ...);
   int debug(const char *format, ...);
+  int warning(const char *format, ...);
   void __failed_assert(const char *assertion, const char *message, const char *file, u32 line, const char *function);
 }

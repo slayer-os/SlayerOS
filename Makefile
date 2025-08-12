@@ -1,18 +1,24 @@
 VERSION := $(shell git rev-parse --short HEAD)
 
-LIMINE_DIR := limine
+DEPS_DIR := deps
+
+LIMINE_DIR := $(DEPS_DIR)/limine
 LIMINE_BIN := $(LIMINE_DIR)/limine
 LIMINE_CFG := misc/boot/limine.conf
 
 KLIB_DIR := klib
 DRIVERS_DIR := drivers
-ZYDIS_DIR := zydis
+ZYDIS_DIR := $(DEPS_DIR)/zydis
+UACPI_DIR := $(DEPS_DIR)/uacpi
+FLANTERM_DIR := $(DEPS_DIR)/flanterm
 
 INCLUDES := -I$(shell realpath $(LIMINE_DIR)) \
 						-I$(KLIB_DIR)/src/include \
 						-I$(DRIVERS_DIR)/src/include \
 						-I$(ZYDIS_DIR)/include \
 						-I$(ZYDIS_DIR)/dependencies/zycore/include \
+						-I$(FLANTERM_DIR)/src \
+						-I$(UACPI_DIR)/include \
 						-Isrc/include
 
 KERNEL_SRC := src/kernel
@@ -24,6 +30,8 @@ OBJ_DIR := build/obj
 KLIB_LIB := $(KLIB_DIR)/build/klib.a
 DRIVERS_LIB := $(DRIVERS_DIR)/build/drivers.a
 ZYDIS_LIB := $(ZYDIS_DIR)/build/libZydis.a
+UACPI_LIB := $(UACPI_DIR)/build/uacpi.a
+FLANTERM_LIB := $(FLANTERM_DIR)/build/flanterm.a
 
 ISO_FILE := build/slayer_$(VERSION).iso
 ISO_DIR := build/iso
@@ -72,6 +80,34 @@ $(ZYDIS_LIB):
 $(LIMINE_BIN): $(LIMINE_MAKEFILE)
 	$(MAKE) -C $(LIMINE_DIR)
 
+# UACPI
+
+UACPI_OBJ_DIR := $(UACPI_DIR)/build
+UACPI_SRCS := $(wildcard $(UACPI_DIR)/source/*.c)
+UACPI_OBJS := $(patsubst $(UACPI_DIR)/source/%.c,$(UACPI_OBJ_DIR)/%.o,$(UACPI_SRCS))
+
+$(UACPI_LIB): $(UACPI_OBJS)
+	@mkdir -p $(dir $@)
+	$(AR) rcs $@ $^
+
+$(UACPI_DIR)/build/%.o: $(UACPI_DIR)/source/%.c
+	@mkdir -p $(dir $@)
+	$(CC) -I$(UACPI_DIR)/include/ -ffreestanding -fno-stack-protector -fno-builtin -Wall -Wextra -O2 -g -std=c11 -c $< -o $@
+
+# flanterm
+
+FLANTERM_OBJ_DIR := $(FLANTERM_DIR)/build
+FLANTERM_SRCS := $(shell find $(FLANTERM_DIR)/src -name '*.c')
+FLANTERM_OBJS := $(patsubst $(FLANTERM_DIR)/src/%.c,$(FLANTERM_OBJ_DIR)/%.o,$(FLANTERM_SRCS))
+
+$(FLANTERM_LIB): $(FLANTERM_OBJS)
+	@mkdir -p $(dir $@)
+	$(AR) rcs $@ $^
+
+$(FLANTERM_OBJ_DIR)/%.o: $(FLANTERM_DIR)/src/%.c
+	@mkdir -p $(dir $@)
+	$(CC) -ffreestanding -fno-stack-protector -fno-builtin -mno-sse -mno-sse2 -mno-sse3 -mno-avx -mno-avx2 -mno-avx512f -Wall -Wextra -O2 -g -std=c11 -c $< -o $@
+
 # Kernel
 
 $(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.cc
@@ -82,8 +118,8 @@ $(OBJ_DIR)/%.o: $(KERNEL_SRC)/%.s
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL_BIN): $(ZYDIS_LIB) $(KLIB_LIB) $(DRIVERS_LIB) $(KERN_OBJECTS)
-	$(LD) $(KERN_LDFLAGS) -o $(KERNEL_BIN) $(KERN_OBJECTS) $(DRIVERS_LIB) $(KLIB_LIB) $(ZYDIS_LIB)
+$(KERNEL_BIN): $(ZYDIS_LIB) $(UACPI_LIB) $(FLANTERM_LIB) $(KLIB_LIB) $(DRIVERS_LIB) $(KERN_OBJECTS)
+	$(LD) $(KERN_LDFLAGS) -o $(KERNEL_BIN) $(KERN_OBJECTS) $(DRIVERS_LIB) $(KLIB_LIB) $(ZYDIS_LIB) $(UACPI_LIB) $(FLANTERM_LIB)
 
 
 $(ISO_FILE): $(LIMINE_BIN) $(KERNEL_BIN)
@@ -100,6 +136,16 @@ $(ISO_FILE): $(LIMINE_BIN) $(KERNEL_BIN)
 		$(ISO_DIR) -o $@
 	$(LIMINE_BIN) bios-install $@
 
+
+clangd:
+	@echo "CompileFlags:" > .clangd
+	@echo "  Add: [" >> .clangd
+	@for inc in $(INCLUDES); do \
+		dir=$${inc#-I}; \
+		abs=$$(realpath $$dir); \
+		echo "    \"-I$$abs\"," >> .clangd; \
+	done
+	@echo "  ]" >> .clangd
 
 # Testing
 
@@ -125,5 +171,7 @@ clean:
 	$(MAKE) -C $(KLIB_DIR) clean
 	$(MAKE) -C $(DRIVERS_DIR) clean
 	rm -r $(ZYDIS_DIR)/build
+	rm -rf $(UACPI_OBJ_DIR) $(UACPI_LIB)
+	rm -rf $(FLANTERM_OBJ_DIR) $(FLANTERM_LIB)
 
 .PHONY: all clean run runint $(KLIB_LIB) $(DRIVERS_LIB)

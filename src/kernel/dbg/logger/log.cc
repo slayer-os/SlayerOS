@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <klib/string.h>
 #include <arch/serial.h>
+#include <drivers/tty.h>
 
 void print_serial(const char *message) {
   while (*message) {
@@ -12,8 +13,13 @@ void print_serial(const char *message) {
 
 int Log::print(const char *message) {
   print_serial(message);
-  // TODO: Print to the screen
-  return strlen(message);
+  usize len = strlen(message);
+
+  if (Drivers::TTY::initialized()) {
+    Drivers::TTY::write(message, len);
+  }
+
+  return len;
 }
 
 int Log::printf(const char *format, ...) {
@@ -92,6 +98,18 @@ int Log::debug(const char *format, ...) {
   out_size += Log::vsprintf(base, args);
   va_end(args);
   out_size += Log::printf("\x1b[0m\n");
+  return out_size;
+}
+
+int Log::warning(const char *format, ...) {
+  int out_size = 0;
+  char base[128] = "\x1b[33;1m[ WARNING]\x1b[36m ";
+  strcat(base, format);
+  va_list args;
+  va_start(args, format);
+  out_size += Log::vsprintf(base, args);
+  va_end(args);
+  out_size += Log::print("\x1b[0m\n");
   return out_size;
 }
 

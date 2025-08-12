@@ -2,7 +2,7 @@
 #include <klib/string.h>
 
 static bool *frames;
-static size_t nframes;
+static usize nframes;
 u32 latest_frame=0;
 u32 available_frames;
 void *base_addr;
@@ -22,7 +22,7 @@ void *Mem::Frame::alloc() {
 }
 
 
-void *Mem::Frame::allocs(size_t count) {
+void *Mem::Frame::allocs(usize count) {
   // find adjacent free frames
   u32 start_frame = latest_frame;
   u32 frame_count = 0;

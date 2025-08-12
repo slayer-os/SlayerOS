@@ -1,4 +1,5 @@
 #include <mem/heap.h>
+#include <dbg/log.h>
 
 heap_page_t *heap = nullptr;
 
@@ -16,8 +17,8 @@ void page_segments_init(heap_page_t *page) {
   page->first = segment;
 }
 
-heap_page_t *create_heap_page(size_t size) {
-  size_t alloc_size;
+heap_page_t *create_heap_page(usize size) {
+  usize alloc_size;
   // If the requested size (plus overhead) fits in one frame, use FRAME_SIZE.
   u32 num_pages = 1;
   if (size + sizeof(heap_page_t) + sizeof(heap_segment_t) <= FRAME_SIZE) {
@@ -29,7 +30,10 @@ heap_page_t *create_heap_page(size_t size) {
   }
 
   heap_page_t *page = (heap_page_t *)Mem::Frame::allocs(num_pages);
-  
+  if (page == nullptr) {
+    Log::critical("Cannot allocate heap pages");
+    __asm__ __volatile__ ("hlt");
+  }
   
   page->addr = (void*)((char*)page + sizeof(heap_page_t));
   page->free_size = alloc_size - sizeof(heap_page_t);
@@ -38,7 +42,7 @@ heap_page_t *create_heap_page(size_t size) {
   return page;
 }
 
-void *alloc_segment(heap_page_t *page, heap_segment_t *segment, size_t size) {
+void *alloc_segment(heap_page_t *page, heap_segment_t *segment, usize size) {
   if (segment->size > size + sizeof(heap_segment_t)) {
 
     heap_segment_t *fragment = (heap_segment_t*)((char*)segment->addr + size);
@@ -64,7 +68,7 @@ void try_segment_merge(heap_page_t *page, heap_segment_t *segment) {
   }
 }
 
-void *kmalloc(size_t size) {
+void *kmalloc(usize size) {
   if (heap == nullptr) heap = create_heap_page(size);
   heap_page_t *page = heap;
   while (page) {

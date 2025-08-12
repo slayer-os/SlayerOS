@@ -30,7 +30,7 @@ void map_kernel_code() {
 }
 
 void map_found_memory() {
-  for (size_t i =0; i < boot_ctx.memmap_entries_count; i++) {
+  for (usize i =0; i < boot_ctx.memmap_entries_count; i++) {
     struct limine_memmap_entry *entry = boot_ctx.memmap_entries[i];
     u64 vaddr = (u64)PHYS2VIRT(entry->base);
     u64 paddr = entry->base;
@@ -45,7 +45,7 @@ void map_found_memory() {
 }
 
 void map_hhdm_memory() {
-  for (size_t i =0; i < boot_ctx.memmap_entries_count; i++) {
+  for (usize i =0; i < boot_ctx.memmap_entries_count; i++) {
     struct limine_memmap_entry *entry = boot_ctx.memmap_entries[i];
     u64 vaddr = (u64)PHYS2VIRT(entry->base);
     u64 paddr = entry->base;

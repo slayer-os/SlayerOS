@@ -7,26 +7,26 @@
 static page_table_t *pml4;
 
 void flush_tlb() {
-  asm volatile("mov %cr3, %rax; mov %rax, %cr3");
+  __asm__ __volatile__("mov %cr3, %rax; mov %rax, %cr3");
 }
 
 void load_cr3(void *cr3) {
-  asm volatile("mov %0, %%cr3" :: "r"((u64)VIRT2PHYS(cr3)) : "memory");
+  __asm__ __volatile__("mov %0, %%cr3" :: "r"((u64)VIRT2PHYS(cr3)) : "memory");
 }
 
 void enable_paging() {
   // PAE paging
   u64 cr4;
-  asm volatile("mov %%cr4, %0" : "=r"(cr4));
+  __asm__ __volatile__("mov %%cr4, %0" : "=r"(cr4));
   cr4 |= 0x20;
-  asm volatile("mov %0, %%cr4" :: "r"(cr4));
+  __asm__ __volatile__("mov %0, %%cr4" :: "r"(cr4));
 
 
   // Enable paging
   u64 cr0;
-  asm volatile("mov %%cr0, %0" : "=r"(cr0));
+  __asm__ __volatile__("mov %%cr0, %0" : "=r"(cr0));
   cr0 |= 0x80000000;
-  asm volatile("mov %0, %%cr0" :: "r"(cr0));
+  __asm__ __volatile__("mov %0, %%cr0" :: "r"(cr0));
 }
 
 void Mem::Paging::map(void *physptr, void *virtptr, u64 flags) {
@@ -105,4 +105,18 @@ void Mem::Paging::init() {
   Mem::Mapper::full_map();
   load_cr3(pml4);
   enable_paging();
+}
+
+void* Mem::Paging::map_mmio(u64 phys_addr, usize size) {
+  u64 aligned_phys = ROUND_DOWN(phys_addr);
+  u64 offset = phys_addr - aligned_phys;
+  
+  usize aligned_size = ALIGN_UP(size + offset, 0x1000);
+  
+  void* virt_addr = (void*)PHYS2VIRT(aligned_phys);
+  
+  u64 flags = PAGE_PRESENT | PAGE_WRITE | PAGE_UNCACHE;
+  map_range((void*)aligned_phys, virt_addr, aligned_size, flags);
+  
+  return (void*)((u64)virt_addr + offset);
 }

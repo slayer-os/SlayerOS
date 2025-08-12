@@ -3,7 +3,7 @@
 BootloaderCtx boot_ctx;
 
 struct limine_bootloader_info_request limine_info = {
-    .id = LIMINE_BOOTLOADER_INFO_REQUEST,
+  .id = LIMINE_BOOTLOADER_INFO_REQUEST,
 };
 
 struct limine_paging_mode_request limine_paging = {
@@ -12,24 +12,27 @@ struct limine_paging_mode_request limine_paging = {
 };
 
 struct limine_memmap_request limine_memmap = {
-    .id = LIMINE_MEMMAP_REQUEST,
+  .id = LIMINE_MEMMAP_REQUEST,
 };
 
 struct limine_hhdm_request limine_hhdm = {
-    .id = LIMINE_HHDM_REQUEST,
+  .id = LIMINE_HHDM_REQUEST,
 };
 
-
 struct limine_kernel_address_request limine_kernaddr = {
-    .id = LIMINE_KERNEL_ADDRESS_REQUEST,
+  .id = LIMINE_KERNEL_ADDRESS_REQUEST,
 };
 
 struct limine_framebuffer_request limine_fb = {
-    .id = LIMINE_FRAMEBUFFER_REQUEST,
+  .id = LIMINE_FRAMEBUFFER_REQUEST,
 };
 
 struct limine_kernel_file_request limine_kernel_file = {
-    .id = LIMINE_KERNEL_FILE_REQUEST,
+  .id = LIMINE_KERNEL_FILE_REQUEST,
+};
+
+struct limine_rsdp_request limine_rsdp = {
+  .id = LIMINE_RSDP_REQUEST,
 };
 
 void sort_memmap() {
@@ -56,5 +59,6 @@ void BootloaderCtx::gather() {
   boot_ctx.kern_address_phys = (void*)limine_kernaddr.response->physical_base;
   boot_ctx.fb_info = limine_fb.response;
   boot_ctx.kernel_file = limine_kernel_file.response->kernel_file;
+  boot_ctx.rsdp_addr = limine_rsdp.response->address - boot_ctx.hhdm_addr;
   sort_memmap();
 }

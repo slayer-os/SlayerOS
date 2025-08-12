@@ -2,6 +2,7 @@
 
 bool __attribute__((naked)) SSE::enable() {
 __asm__ __volatile__(
+    "push %rbx\n"
     "mov %cs, %ax\n"
     "and $3, %ax\n"
     "cmp $0, %ax\n"
@@ -30,11 +31,13 @@ __asm__ __volatile__(
     "mov %rax, %cr4\n"
     "xor %eax, %eax\n"
     "mov $1, %al\n"
+    "pop %rbx\n"
     "ret\n"
 
 
     "fl:\n"
     "xor %eax, %eax\n"
+    "pop %rbx\n"
     "ret\n"
   );
 }
