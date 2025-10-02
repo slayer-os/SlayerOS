@@ -1,2 +1,6 @@
 build/
+<<<<<<< Updated upstream
 .clangd
+=======
+.vscode/c_cpp_properties.json
+>>>>>>> Stashed changes
